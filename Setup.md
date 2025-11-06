@@ -26,7 +26,7 @@
 
 - Nodemon for development server auto-restart
 
-## **How to Use This Repository**
+## **Project Starter**
 
 1. Initialize Node.js Project
 
@@ -78,3 +78,17 @@ npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
 **Build `Frontend` with `Vite`**
 
 - `npm run build` to create a production build in the `dist` folder.
+
+<hr>
+
+## **Integrating `Socket.IO` for Real-Time Communication**
+
+- Install `Socket.IO`:
+
+```bash
+npm install socket.io
+
+npm install @types/socket.io --save-dev
+```
+
+- Set up a basic `Socket.IO` server in your `Express` application.
