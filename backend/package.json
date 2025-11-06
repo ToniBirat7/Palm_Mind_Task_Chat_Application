@@ -1,16 +1,25 @@
 {
-  "name": "palm_mind(mern_project)",
+  "name": "palm_mind",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "MERN project backend built with Express and TypeScript",
+  "main": "dist/server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
   "devDependencies": {
-    "typescript": "^5.9.3"
+    "@types/express": "^5.0.5",
+    "@types/node": "^22.9.1",
+    "typescript": "^5.9.3",
+    "ts-node": "^10.9.2",
+    "nodemon": "^3.1.4"
   }
 }
