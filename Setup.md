@@ -70,3 +70,11 @@ export default defineConfig({
 ```bash
 npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
 ```
+
+**Build `Backend` with `Express`, `MongoDB`, and `Socket.IO`**
+
+- `npm run build` to compile TypeScript files to JavaScript in the `dist` folder.
+
+**Build `Frontend` with `Vite`**
+
+- `npm run build` to create a production build in the `dist` folder.
