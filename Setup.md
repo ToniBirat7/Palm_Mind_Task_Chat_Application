@@ -18,6 +18,12 @@
 
 - Install TailwindCSS and its dependencies: `npm install tailwindcss @tailwindcss/vite`
 
+- Also, install `TailwindCLI` to generate the main `CSS` file:
+
+```bash
+npm install @tailwindcss/cli
+```
+
 - Configure the `vite.config.ts` file to include TailwindCSS plugin.
 
 ```ts
@@ -29,4 +35,10 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
 });
+```
+
+- Generate the `CSS` file using TailwindCLI:
+
+```bash
+npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
 ```
