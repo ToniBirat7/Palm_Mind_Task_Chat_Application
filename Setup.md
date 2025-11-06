@@ -1,3 +1,31 @@
+## **Tools Used**
+
+- Node.js
+
+- TypeScript
+
+- React
+
+- Vite
+
+- TailwindCSS
+
+- Express
+
+- MongoDB (Mongoose) in Docker
+
+- Socket.IO
+
+- JWT Authentication
+
+- bcrypt for password hashing
+
+- dotenv for environment variable management
+
+- Docker for containerization
+
+- Nodemon for development server auto-restart
+
 ## **How to Use This Repository**
 
 1. Initialize Node.js Project
