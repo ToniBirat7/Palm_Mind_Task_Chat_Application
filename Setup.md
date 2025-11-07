@@ -79,6 +79,10 @@ npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
 
 - `npm run build` to create a production build in the `dist` folder.
 
+**Run the Builds**
+
+- `npm start` to run the compiled backend server.
+
 <hr>
 
 ## **Integrating `Socket.IO` for Real-Time Communication**
