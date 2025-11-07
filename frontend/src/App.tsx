@@ -4,7 +4,13 @@
 import { useEffect, useRef, useState } from "react";
 
 type User = { id: string; name: string; online?: boolean };
-type Message = { id: string; userId: string; name: string; text: string; time: string };
+type Message = {
+  id: string;
+  userId: string;
+  name: string;
+  text: string;
+  time: string;
+};
 
 // Visually attractive chat UI using Tailwind CSS. No Socket.IO wiring.
 export default function App() {
@@ -15,8 +21,20 @@ export default function App() {
   ]);
 
   const [messages, setMessages] = useState<Message[]>([
-    { id: "m1", userId: "u1", name: "Alice", text: "Hey! Welcome to Palm Mind.", time: "10:01" },
-    { id: "m2", userId: "u2", name: "Bob", text: "Nice place to collaborate 👋", time: "10:02" },
+    {
+      id: "m1",
+      userId: "u1",
+      name: "Alice",
+      text: "Hey! Welcome to Palm Mind.",
+      time: "10:01",
+    },
+    {
+      id: "m2",
+      userId: "u2",
+      name: "Bob",
+      text: "Nice place to collaborate 👋",
+      time: "10:02",
+    },
   ]);
 
   const [text, setText] = useState("");
@@ -34,14 +52,17 @@ export default function App() {
       userId: "u1",
       name: "You",
       text: text.trim(),
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
     setMessages((m) => [...m, newMsg]);
     setText("");
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white flex items-center justify-center p-6">
+    <div className="min-h-screen bg-linear-to-b from-sky-50 to-white flex items-center justify-center p-6">
       <div className="w-full max-w-6xl h-[85vh] bg-white shadow-xl rounded-2xl overflow-hidden grid grid-cols-12">
         {/* Left column - users */}
         <aside className="col-span-3 bg-slate-50 p-6 border-r">
@@ -52,12 +73,18 @@ export default function App() {
           <ul className="space-y-4">
             {users.map((u) => (
               <li key={u.id} className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white ${u.online ? "bg-emerald-500" : "bg-gray-400"}`}>
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white ${
+                    u.online ? "bg-emerald-500" : "bg-gray-400"
+                  }`}
+                >
                   {u.name.charAt(0)}
                 </div>
                 <div>
                   <div className="font-medium">{u.name}</div>
-                  <div className="text-xs text-slate-500">{u.online ? "Online" : "Offline"}</div>
+                  <div className="text-xs text-slate-500">
+                    {u.online ? "Online" : "Offline"}
+                  </div>
                 </div>
               </li>
             ))}
@@ -69,11 +96,18 @@ export default function App() {
           <header className="flex items-center justify-between p-6 border-b">
             <div>
               <h1 className="text-2xl font-bold">Palm Mind Chat</h1>
-              <p className="text-sm text-slate-500">Real-time collaboration for your team</p>
+              <p className="text-sm text-slate-500">
+                Real-time collaboration for your team
+              </p>
             </div>
             <div className="flex items-center gap-4">
-              <div className="text-sm text-slate-600">Users: <span className="font-semibold">{users.length}</span></div>
-              <div className="text-sm text-slate-600">Messages: <span className="font-semibold">{messages.length}</span></div>
+              <div className="text-sm text-slate-600">
+                Users: <span className="font-semibold">{users.length}</span>
+              </div>
+              <div className="text-sm text-slate-600">
+                Messages:{" "}
+                <span className="font-semibold">{messages.length}</span>
+              </div>
             </div>
           </header>
 
@@ -82,12 +116,25 @@ export default function App() {
               {messages.map((m) => {
                 const mine = m.userId === "u1";
                 return (
-                  <li key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
-                    <div className={`${mine ? "bg-indigo-600 text-white" : "bg-white text-slate-800 border"} max-w-[70%] p-4 rounded-2xl shadow`}>
+                  <li
+                    key={m.id}
+                    className={`flex ${mine ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`${
+                        mine
+                          ? "bg-indigo-600 text-white"
+                          : "bg-white text-slate-800 border"
+                      } max-w-[70%] p-4 rounded-2xl shadow`}
+                    >
                       <div className="flex items-center gap-3 mb-1">
-                        <div className="w-8 h-8 rounded-full bg-indigo-400 flex items-center justify-center text-white font-semibold">{m.name.charAt(0)}</div>
+                        <div className="w-8 h-8 rounded-full bg-indigo-400 flex items-center justify-center text-white font-semibold">
+                          {m.name.charAt(0)}
+                        </div>
                         <div className="text-sm font-medium">{m.name}</div>
-                        <time className="text-xs text-slate-400 ml-3">{m.time}</time>
+                        <time className="text-xs text-slate-400 ml-3">
+                          {m.time}
+                        </time>
                       </div>
                       <div className="text-sm leading-relaxed">{m.text}</div>
                     </div>
@@ -99,7 +146,10 @@ export default function App() {
           </div>
 
           <footer className="p-4 border-t">
-            <form className="max-w-4xl mx-auto flex gap-3" onSubmit={handleSend}>
+            <form
+              className="max-w-4xl mx-auto flex gap-3"
+              onSubmit={handleSend}
+            >
               <input
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -107,7 +157,11 @@ export default function App() {
                 placeholder="Type your message..."
                 aria-label="Type a message"
               />
-              <button type="submit" className="bg-indigo-600 text-white rounded-full px-6 py-3 font-semibold shadow hover:bg-indigo-700 disabled:opacity-50" disabled={!text.trim()}>
+              <button
+                type="submit"
+                className="bg-indigo-600 text-white rounded-full px-6 py-3 font-semibold shadow hover:bg-indigo-700 disabled:opacity-50"
+                disabled={!text.trim()}
+              >
                 Send
               </button>
             </form>
