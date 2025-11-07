@@ -62,10 +62,10 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-sky-50 to-white flex items-center justify-center p-6">
-      <div className="w-full max-w-6xl h-[85vh] bg-white shadow-xl rounded-2xl overflow-hidden grid grid-cols-12">
+    <div className="chat-container">
+      <div className="chat-card">
         {/* Left column - users */}
-        <aside className="col-span-3 bg-slate-50 p-6 border-r">
+        <aside className="chat-users">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold">Active</h2>
             <span className="text-sm text-slate-500">{users.length}</span>
@@ -92,7 +92,7 @@ export default function App() {
         </aside>
 
         {/* Main chat area */}
-        <section className="col-span-9 flex flex-col">
+        <section className="chat-main">
           <header className="flex items-center justify-between p-6 border-b">
             <div>
               <h1 className="text-2xl font-bold">Palm Mind Chat</h1>
@@ -111,7 +111,7 @@ export default function App() {
             </div>
           </header>
 
-          <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-white to-slate-50">
+          <div className="chat-messages">
             <ul className="space-y-4 max-w-3xl mx-auto">
               {messages.map((m) => {
                 const mine = m.userId === "u1";
@@ -121,11 +121,9 @@ export default function App() {
                     className={`flex ${mine ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`${
-                        mine
-                          ? "bg-indigo-600 text-white"
-                          : "bg-white text-slate-800 border"
-                      } max-w-[70%] p-4 rounded-2xl shadow`}
+                      className={`chat-message ${
+                        mine ? "chat-message--mine" : "chat-message--other"
+                      }`}
                     >
                       <div className="flex items-center gap-3 mb-1">
                         <div className="w-8 h-8 rounded-full bg-indigo-400 flex items-center justify-center text-white font-semibold">
@@ -153,13 +151,13 @@ export default function App() {
               <input
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="flex-1 rounded-full border px-4 py-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="chat-input"
                 placeholder="Type your message..."
                 aria-label="Type a message"
               />
               <button
                 type="submit"
-                className="bg-indigo-600 text-white rounded-full px-6 py-3 font-semibold shadow hover:bg-indigo-700 disabled:opacity-50"
+                className="btn-primary"
                 disabled={!text.trim()}
               >
                 Send

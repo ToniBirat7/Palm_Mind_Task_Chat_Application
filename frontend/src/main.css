@@ -1,1 +1,102 @@
-@import "tailwindcss";
+@import "tailwindcss/preflight";
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
+
+/* Project-specific components and utilities for the chat UI.
+	 Put styles here so the Tailwind CLI expands them into src/index.css
+*/
+
+/* Monochrome theme variables inserted into generated CSS via Tailwind's base layer */
+@layer base {
+  :root,
+  :host {
+    /* Black monochrome theme tokens */
+    --color-sky-50: #000000; /* page background - pure black */
+    --color-white: #0b0f14; /* panel/card background (very dark gray)
+                          kept named 'white' to preserve Tailwind utility mapping */
+    --color-indigo-300: #94a3b8; /* muted light gray for subtle accents */
+    --color-indigo-400: #6b7280; /* medium gray */
+    --color-indigo-600: #0b0f14; /* deep near-black for primary surfaces */
+    --color-indigo-700: #07080a; /* hover/strong accent */
+    --color-slate-50: #050506; /* gradient stop near black */
+    --color-slate-700: #0b0f14; /* panel background */
+    --color-slate-800: #e6eef5; /* text (light) */
+    --color-gray-400: #94a3b8; /* muted */
+  }
+
+  body {
+    /* Apply the black monochrome theme globally */
+    background-color: var(--color-sky-50);
+    color: var(--color-slate-800);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* Chat container (centered card) */
+  .chat-container {
+    @apply min-h-screen bg-gradient-to-b from-sky-50 to-white flex items-center justify-center p-6;
+  }
+
+  .chat-card {
+    @apply w-full max-w-6xl h-[85vh] bg-white shadow-xl rounded-2xl overflow-hidden grid grid-cols-12;
+  }
+
+  /* Users column */
+  .chat-users {
+    @apply col-span-3 bg-slate-50 p-6 border-r;
+  }
+
+  .chat-users__item {
+    @apply flex items-center gap-3 mb-4;
+  }
+
+  .chat-users__avatar {
+    @apply w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white bg-slate-700;
+  }
+
+  /* Chat area */
+  .chat-main {
+    @apply col-span-9 flex flex-col;
+  }
+
+  .chat-header {
+    @apply flex items-center justify-between p-6 border-b;
+  }
+
+  .chat-messages {
+    @apply flex-1 overflow-y-auto p-6 bg-gradient-to-b from-white to-slate-50;
+  }
+
+  .chat-message {
+    @apply max-w-[70%] p-4 rounded-2xl shadow;
+  }
+
+  .chat-message--mine {
+    @apply bg-indigo-600 text-white;
+  }
+
+  .chat-message--other {
+    @apply bg-white text-slate-800 border;
+  }
+
+  .chat-input-wrap {
+    @apply p-4 border-t;
+  }
+
+  .chat-input {
+    @apply flex-1 rounded-full border px-4 py-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300;
+  }
+
+  .btn-primary {
+    @apply bg-indigo-600 text-white rounded-full px-6 py-3 font-semibold shadow hover:bg-indigo-700 disabled:opacity-50;
+  }
+}
+
+@layer utilities {
+  /* Small utility for visually-hidden label when needed */
+  .visually-hidden {
+    @apply sr-only;
+  }
+}
