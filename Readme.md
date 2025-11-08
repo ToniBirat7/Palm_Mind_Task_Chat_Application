@@ -2,13 +2,13 @@
 
 Real-time chat application (MERN-style) with user CRUD, authentication/authorization, Socket.IO real-time messaging, and persisted chat history in MongoDB.
 
-Tech stack
+### **Tech stack**
 
 - Backend: Node.js, Express, TypeScript/JavaScript, MongoDB (mongoose), Socket.IO
 
 - Frontend: React + TypeScript, Vite, Tailwind CSS
 
-Main features
+### **Main features**
 
 - User registration, login (JWT) and full CRUD for users (auth protected)
 
@@ -22,7 +22,17 @@ Main features
 
 Getting started (developer)
 
-Prerequisites
+### **Architecture Overview**
+
+**Storing Chat Messages**
+
+- MongoDB write latency (~1–10 ms) might slightly slow down message propagation. If many users send messages simultaneously, MongoDB could become a bottleneck.
+
+- Client → Backend → Redis Pub/Sub → MongoDB (async write)
+
+- Backend publishes the new message into a Redis channel (fast, in-memory). All connected chat servers subscribe and broadcast instantly to clients. A background worker (or the backend itself) periodically flushes messages from Redis → MongoDB.
+
+### **Prerequisites**
 
 - Node.js 18+ (or LTS)
 
@@ -117,6 +127,7 @@ Socket events
 Data shapes (examples)
 
 - User
+
   - \_id, name, email, passwordHash, role
 
 - Message
@@ -145,4 +156,3 @@ Deployment
 - Use process managers (pm2) or containerize (Docker) for backend
 
 - Host frontend on static hosting (Vercel, Netlify) and point VITE_API_URL to your backend
-
