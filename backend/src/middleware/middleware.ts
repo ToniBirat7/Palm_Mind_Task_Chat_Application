@@ -13,8 +13,15 @@ export const authenticateJWT = (
   if (!token) return res.status(401).json({ message: "Unauthorized" });
 
   try {
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-      if(err) return res.status(401).json({ message
-    } );
-  } catch (error) {}
+    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
+      if (err) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+      (req as any).user = decoded;
+      next();
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error });
+  }
 };
