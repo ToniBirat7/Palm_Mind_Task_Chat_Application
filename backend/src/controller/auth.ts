@@ -1,5 +1,9 @@
 // Related to auths
 
-export const createUser = (req, res) => {};
+import { User } from "../model/chat.model.js";
 
-export const loginUser = (req, res) => {};
+export const createUser = (req: Request, res: Response) => {
+
+};
+
+export const loginUser = (req: Request, res: Response) => {};
