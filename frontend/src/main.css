@@ -1,102 +1,123 @@
-@import "tailwindcss/preflight";
-@import "tailwindcss/theme";
-@import "tailwindcss/utilities";
+@import "tailwindcss";
 
-/* Project-specific components and utilities for the chat UI.
-	 Put styles here so the Tailwind CLI expands them into src/index.css
-*/
-
-/* Monochrome theme variables inserted into generated CSS via Tailwind's base layer */
+/* Base styles for monochromatic theme */
 @layer base {
-  :root,
-  :host {
-    /* Black monochrome theme tokens */
-    --color-sky-50: #000000; /* page background - pure black */
-    --color-white: #0b0f14; /* panel/card background (very dark gray)
-                          kept named 'white' to preserve Tailwind utility mapping */
-    --color-indigo-300: #94a3b8; /* muted light gray for subtle accents */
-    --color-indigo-400: #6b7280; /* medium gray */
-    --color-indigo-600: #0b0f14; /* deep near-black for primary surfaces */
-    --color-indigo-700: #07080a; /* hover/strong accent */
-    --color-slate-50: #050506; /* gradient stop near black */
-    --color-slate-700: #0b0f14; /* panel background */
-    --color-slate-800: #e6eef5; /* text (light) */
-    --color-gray-400: #94a3b8; /* muted */
+  html {
+    @apply bg-[#0a0a0a] text-white;
   }
 
   body {
-    /* Apply the black monochrome theme globally */
-    background-color: var(--color-sky-50);
-    color: var(--color-slate-800);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    @apply bg-[#0a0a0a] text-gray-100;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-[#1a1a1a];
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-[#3a3a3a] rounded hover:bg-gray-600;
   }
 }
 
+/* Component styles */
 @layer components {
-  /* Chat container (centered card) */
+  /* Chat container */
   .chat-container {
-    @apply min-h-screen bg-gradient-to-b from-sky-50 to-white flex items-center justify-center p-6;
+    @apply flex h-screen w-full bg-[#0a0a0a];
   }
 
-  .chat-card {
-    @apply w-full max-w-6xl h-[85vh] bg-white shadow-xl rounded-2xl overflow-hidden grid grid-cols-12;
+  /* Sidebar */
+  .sidebar {
+    @apply w-72 bg-[#1a1a1a] border-r border-[#3a3a3a] flex flex-col;
   }
 
-  /* Users column */
-  .chat-users {
-    @apply col-span-3 bg-slate-50 p-6 border-r;
-  }
-
-  .chat-users__item {
-    @apply flex items-center gap-3 mb-4;
-  }
-
-  .chat-users__avatar {
-    @apply w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white bg-slate-700;
-  }
-
-  /* Chat area */
+  /* Main chat area */
   .chat-main {
-    @apply col-span-9 flex flex-col;
+    @apply flex-1 flex flex-col bg-[#0a0a0a];
   }
 
-  .chat-header {
-    @apply flex items-center justify-between p-6 border-b;
+  /* Message bubble - sent (right aligned) */
+  .message-sent {
+    @apply bg-gray-700 text-white rounded-3xl rounded-tr-sm px-4 py-3 max-w-xs lg:max-w-md overflow-auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   }
 
-  .chat-messages {
-    @apply flex-1 overflow-y-auto p-6 bg-gradient-to-b from-white to-slate-50;
+  /* Message bubble - received (left aligned) */
+  .message-received {
+    @apply bg-[#2a2a2a] text-gray-100 rounded-3xl rounded-tl-sm px-4 py-3 max-w-xs lg:max-w-md overflow-auto border border-[#3a3a3a];
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   }
 
-  .chat-message {
-    @apply max-w-[70%] p-4 rounded-2xl shadow;
-  }
-
-  .chat-message--mine {
-    @apply bg-indigo-600 text-white;
-  }
-
-  .chat-message--other {
-    @apply bg-white text-slate-800 border;
-  }
-
-  .chat-input-wrap {
-    @apply p-4 border-t;
-  }
-
+  /* Input field */
   .chat-input {
-    @apply flex-1 rounded-full border px-4 py-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300;
+    @apply bg-[#1a1a1a] text-white border border-[#3a3a3a] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-600 placeholder-gray-500;
   }
 
+  /* Button primary */
   .btn-primary {
-    @apply bg-indigo-600 text-white rounded-full px-6 py-3 font-semibold shadow hover:bg-indigo-700 disabled:opacity-50;
+    @apply bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Button secondary */
+  .btn-secondary {
+    @apply bg-[#2a2a2a] hover:bg-[#3a3a3a] text-gray-100 font-semibold py-2 px-6 rounded-lg transition-colors border border-[#3a3a3a];
+  }
+
+  /* User item in sidebar */
+  .user-item {
+    @apply px-4 py-3 cursor-pointer hover:bg-[#2a2a2a] transition-colors border-b border-[#3a3a3a] flex items-center gap-3;
+  }
+
+  .user-item.active {
+    @apply bg-[#2a2a2a] border-l-4 border-l-gray-600;
+  }
+
+  /* Header */
+  .chat-header {
+    @apply bg-[#1a1a1a] border-b border-[#3a3a3a] px-6 py-4 flex items-center justify-between;
+  }
+
+  /* Message list */
+  .messages-list {
+    @apply flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-3;
+  }
+
+  /* Input area */
+  .input-area {
+    @apply bg-[#1a1a1a] border-t border-[#3a3a3a] px-6 py-4 flex gap-2;
+  }
+
+  /* Avatar */
+  .avatar {
+    @apply w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-sm font-semibold text-white;
+  }
+
+  /* Status indicator */
+  .status-online {
+    @apply w-3 h-3 bg-green-500 rounded-full;
   }
 }
 
+/* Animations */
 @layer utilities {
-  /* Small utility for visually-hidden label when needed */
-  .visually-hidden {
-    @apply sr-only;
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
