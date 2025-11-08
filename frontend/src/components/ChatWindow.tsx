@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSocketContext } from "./SocketProvider";
 
 interface ChatWindowProps {
   selectedUser: string | null;
@@ -47,6 +48,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
 
   const [inputValue, setInputValue] = useState("");
 
+  const socketContext = useSocketContext();
+
+  console.log("SocketContext : ", socketContext);
+
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim()) {
@@ -56,6 +61,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
         sender: "user",
         timestamp: new Date(),
       };
+      socketContext?.emit("message", newMessage);
       setMessages([...messages, newMessage]);
       setInputValue("");
     }
@@ -195,6 +201,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
                 />
               </svg>
             </button>
+
             <input
               type="text"
               value={inputValue}
@@ -202,6 +209,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
               placeholder="Aa"
               className="chat-input flex-1"
             />
+
             <button
               type="button"
               className="p-2 hover:bg-[#2a2a2a] rounded-full transition-colors"
@@ -220,6 +228,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
                 />
               </svg>
             </button>
+
             <button
               type="submit"
               className="p-2 hover:bg-[#2a2a2a] rounded-full transition-colors"

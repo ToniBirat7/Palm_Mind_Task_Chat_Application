@@ -5,7 +5,7 @@ import useSocket from "../hooks/useSocket";
 
 const SocketContext = React.createContext<Socket | null>(null);
 
-const SocketProvider: React.FC<{ children: ReactNode }> = (props) => {
+export const SocketProvider: React.FC<{ children: ReactNode }> = (props) => {
   const socket = useSocket();
   return (
     <SocketContext.Provider value={socket}>
@@ -14,4 +14,6 @@ const SocketProvider: React.FC<{ children: ReactNode }> = (props) => {
   );
 };
 
-export default SocketProvider;
+export const useSocketContext = () => {
+  return React.useContext(SocketContext);
+};

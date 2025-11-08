@@ -1,5 +1,5 @@
 // src/hooks/useSocket.ts
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { io, Socket } from "socket.io-client";
 
 // Define types for your server events (customize these later)
@@ -13,37 +13,30 @@ interface ClientToServerEvents {
 
 const useSocket = (): Socket<ServerToClientEvents, ClientToServerEvents> => {
   // create socket only once (memoized)
-  const socket = useMemo(() => io("http://localhost:3000"), []);
-  const [connected, setConnected] = useState<Boolean>(false);
-
-  useEffect(() => {
-    socket.on("connect", () => {
-      setConnected(true);
-      console.log("✓ Connected to server:", socket.id);
+  const socket = useMemo<
+    Socket<ServerToClientEvents, ClientToServerEvents>
+  >(() => {
+    const s = io("http://localhost:3000", {
+      transports: ["websocket"], // use WebSocket transport
+      autoConnect: true,
     });
 
-    socket.on("disconnect", (reason) => {
+    s.on("connect", () => {
+      console.log("✓ Connected to server:", s.id);
+    });
+
+    s.on("disconnect", (reason) => {
       console.log("✗ Disconnected:", reason);
     });
 
-    socket.on("message", (data) => {
-      console.log(`📩 Message received: ${data}`);
+    s.on("message", (data) => {
+      console.log("Message Received ", data);
     });
 
-    // cleanup on unmount
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
+    return s;
+  }, []);
 
-  if connected {
-    return socket;
-  }
-  else {
-
-    return false
-  }
-
+  return socket;
 };
 
 export default useSocket;

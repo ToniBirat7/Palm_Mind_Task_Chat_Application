@@ -15,10 +15,13 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("✓ User connected:", socket.id);
+  socket.send({ sender: "Server", msg: socket.id });
 
-  socket.on("join-room", (data) => {
-    console.log(`The data is : ${data}`);
-    socket.send();
+  socket.on("message", (data) => {
+    console.log(`The message is : ${data}`);
+    
+    socket.send({ sender: "Server", msg: "MSG Received" });
+
     io.close();
   });
 
