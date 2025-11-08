@@ -1,5 +1,5 @@
 import express from "express";
-import routes from "./routes/index.js";
+import { authRouter, chatRouter } from "./routes/index.js";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import cors from "cors";
@@ -40,6 +40,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
-app.use("/api", routes);
+app.use("/auth", authRouter);
+app.use("/chat", chatRouter);
 
 export { server };

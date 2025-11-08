@@ -1,10 +1,11 @@
 // For Routes
 import { Router } from "express";
+import { createUser, loginUser } from "../controller/auth.js";
 
-const router = Router();
-router.get("/:id", (req, res) => {
-  console.log("Basic Id");
-  return res.send({ msg: "HI" });
-});
+const authRouter = Router();
+const chatRouter = Router();
 
-export default router;
+authRouter.post("/create-user", createUser);
+authRouter.post("/login", loginUser);
+
+export { authRouter, chatRouter };
