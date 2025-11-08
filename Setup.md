@@ -105,3 +105,45 @@ npm install @types/socket.io --save-dev
 npm install socket.io-client
 npm install @types/socket.io-client --save-dev # Typescript types for Socket.IO Client
 ```
+
+## **Run `MongoDB` in Docker**
+
+- Create a `docker-compose.yml` file to define the MongoDB service.
+
+- Use the following command to start MongoDB in a Docker container:
+
+```bash
+docker-compose up -d
+```
+
+- If we want to get into the MongoDB container shell, use:
+
+```bash
+docker exec -it mongodb mongosh -u root -p example
+
+# Then create the database
+
+use chat_app
+
+```
+
+## **Access `MongoDB` from Backend**
+
+- Install `mongoose`:
+
+```bash
+npm install mongoose
+npm install @types/mongoose --save-dev
+```
+
+- Install `dotenv` to manage environment variables:
+
+```bash
+npm install dotenv
+```
+
+- Use the connection string in your backend `.env` file:
+
+```
+MONGO_URI=mongodb://root:example@localhost:27017/chat_app?authSource=admin
+```
