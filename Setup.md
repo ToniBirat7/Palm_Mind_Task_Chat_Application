@@ -98,3 +98,10 @@ npm install @types/socket.io --save-dev
 - Set up a basic `Socket.IO` server in your `Express` application.
 
 ## `Socket.IO` with `React Typescript`
+
+- Install `Socket.IO Client`:
+
+```bash
+npm install socket.io-client
+npm install @types/socket.io-client --save-dev # Typescript types for Socket.IO Client
+```
