@@ -12,8 +12,12 @@
     "types": ["node"],
     // For nodejs:
     "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
+
+    // ESM Configuration
+    "moduleResolution": "nodenext",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
 
     // Other Outputs
     "sourceMap": true,
@@ -42,5 +46,12 @@
     "skipLibCheck": true
   },
   "include": ["src"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "esm": true,
+    "experimentalEsm": true,
+    "compilerOptions": {
+      "module": "nodenext"
+    }
+  }
 }

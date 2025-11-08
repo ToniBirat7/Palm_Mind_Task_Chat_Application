@@ -1,6 +1,6 @@
-import app from "./app.js";
+import { server } from "./app.js";
 import { PORT } from "./config/index.js";
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
