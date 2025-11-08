@@ -2,7 +2,10 @@
 import { Router } from "express";
 import { createUser, loginUser } from "../controller/auth.js";
 
+//  Auth Router
 const authRouter = Router();
+
+//  Auth ChatRouter
 const chatRouter = Router();
 
 authRouter.post("/create-user", createUser);
