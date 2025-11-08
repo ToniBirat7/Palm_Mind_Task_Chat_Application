@@ -144,6 +144,17 @@ npm install dotenv
 
 - Use the connection string in your backend `.env` file:
 
-```
+```bash
 MONGO_URI=mongodb://root:example@localhost:27017/chat_app?authSource=admin
 ```
+
+## **JWT Authentication**
+
+- Install `jsonwebtoken` and `bcrypt`:
+
+```bash
+npm install jsonwebtoken bcrypt
+npm install @types/jsonwebtoken @types/bcrypt --save-dev
+```
+
+- Use JWT for user authentication and bcrypt for password hashing.

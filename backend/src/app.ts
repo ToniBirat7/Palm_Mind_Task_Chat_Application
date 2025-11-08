@@ -3,6 +3,7 @@ import routes from "./routes/index.js";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const server = createServer(app);
@@ -35,6 +36,8 @@ io.on("connection", (socket) => {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
 
 // Routes
 app.use("/api", routes);
