@@ -20,26 +20,6 @@ Main features
 
 - Frontend listens to socket events (message, user join) and updates UI live
 
-Repository structure
-
-```bash
-./
-	Readme.md
-	.env.example         # root example env (optional global vars)
-	backend/
-		package.json
-		tsconfig.json
-		.env.example       # backend env example (DB, JWT, PORT)
-	frontend/
-		package.json
-		vite.config.ts
-		.env.example       # frontend env example (VITE_API_URL)
-		src/
-			App.tsx
-			main.tsx
-			assets/
-```
-
 Getting started (developer)
 
 Prerequisites
@@ -138,10 +118,12 @@ Data shapes (examples)
 
 - User
   - \_id, name, email, passwordHash, role
+
 - Message
   - \_id, fromUser (ref), text, createdAt
 
 Environment variables
+
 See the `.env.example` files for variables to set. Typical keys:
 
 - backend: MONGO_URI, JWT_SECRET, PORT
@@ -164,20 +146,3 @@ Deployment
 
 - Host frontend on static hosting (Vercel, Netlify) and point VITE_API_URL to your backend
 
-Next steps (if you'd like me to continue)
-
-- I can implement the backend endpoints + Socket.IO handlers and add tests.
-
-- Or I can scaffold a simple React UI that connects to the socket and shows messages live.
-
-License
-
-- Add your license or choose an open source license.
-
-Contact
-
-- Maintainer: ToniBirat7
-
----
-
-This README provides a complete developer-focused setup. If you want, I can now implement the backend APIs and socket handlers, then wire a minimal frontend UI and run basic checks.
