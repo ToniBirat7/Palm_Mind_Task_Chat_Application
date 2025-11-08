@@ -38,5 +38,4 @@ app.use(express.json());
 // Routes
 app.use("/api", routes);
 
-export { server, io };
-export default app;
+export { server };
