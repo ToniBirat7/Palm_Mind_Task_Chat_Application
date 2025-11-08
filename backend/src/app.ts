@@ -18,6 +18,8 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", (data) => {
     console.log(`The data is : ${data}`);
+    socket.send();
+    io.close();
   });
 
   socket.on("disconnect", () => {
