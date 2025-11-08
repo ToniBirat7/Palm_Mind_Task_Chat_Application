@@ -50,7 +50,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
 
   const socketContext = useSocketContext();
 
-  console.log("SocketContext : ", socketContext);
+  // console.log("SocketContext : ", socketContext);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +61,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
         sender: "user",
         timestamp: new Date(),
       };
-      socketContext?.emit("message", newMessage);
+      socketContext?.emit("send_message", newMessage, "_chat_room");
       setMessages([...messages, newMessage]);
       setInputValue("");
     }

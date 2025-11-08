@@ -17,10 +17,13 @@ io.on("connection", (socket) => {
   console.log("✓ User connected:", socket.id);
   socket.send({ sender: "Server", msg: socket.id });
 
-  socket.on("message", (data) => {
-    console.log("Message Received ", data);
+  socket.on("join-room", (roomId) => {
+    console.log("Adding in the room : ", roomId);
+    socket.join(roomId);
+  });
 
-    socket.broadcast.emit("message", { sender: "Server", msg: data });
+  socket.on("send_message", (data, roomId) => {
+    socket.to(roomId).emit("receive_message", data);
   });
 
   socket.on("disconnect", () => {

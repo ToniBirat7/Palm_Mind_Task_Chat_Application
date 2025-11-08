@@ -21,6 +21,10 @@ const useSocket = (): Socket<ServerToClientEvents, ClientToServerEvents> => {
       autoConnect: true,
     });
 
+    const roomId = "_chat_room";
+
+    s.emit("join-room", roomId);
+
     s.on("connect", () => {
       console.log("✓ Connected to server:", s.id);
     });
@@ -29,7 +33,7 @@ const useSocket = (): Socket<ServerToClientEvents, ClientToServerEvents> => {
       console.log("✗ Disconnected:", reason);
     });
 
-    s.on("message", (data) => {
+    s.on("receive_message", (data) => {
       console.log("Message Received ", data);
     });
 
