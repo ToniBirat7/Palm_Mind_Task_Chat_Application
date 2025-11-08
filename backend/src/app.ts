@@ -18,11 +18,9 @@ io.on("connection", (socket) => {
   socket.send({ sender: "Server", msg: socket.id });
 
   socket.on("message", (data) => {
-    console.log(`The message is : ${data}`);
-    
-    socket.send({ sender: "Server", msg: "MSG Received" });
+    console.log("Message Received ", data);
 
-    io.close();
+    socket.broadcast.emit("message", { sender: "Server", msg: data });
   });
 
   socket.on("disconnect", () => {
