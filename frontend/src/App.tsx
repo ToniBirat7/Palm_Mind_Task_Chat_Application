@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
+import CreateUser from "./components/CreateUser";
 import Chat from "./components/Chat";
 
 const App: React.FC = () => {
@@ -8,8 +9,9 @@ const App: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/create-user" element={<CreateUser />} />
         <Route path="/chat" element={<Chat />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/create-user" replace />} />
       </Routes>
     </BrowserRouter>
   );

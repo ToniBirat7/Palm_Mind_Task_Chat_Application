@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { validateEmail, validatePassword } from "../utils/common";
 
 interface FormData {
   email: string;
@@ -21,17 +22,6 @@ const Login: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  // Email validation
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  // Password validation
-  const validatePassword = (password: string): boolean => {
-    return password.length >= 6;
-  };
 
   // Validate form
   const validateForm = (): void => {
@@ -54,7 +44,6 @@ const Login: React.FC = () => {
 
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    validateForm();
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -64,9 +53,10 @@ const Login: React.FC = () => {
 
   // Handle form submit
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    validateForm();
     e.preventDefault();
 
-    if (!errors) {
+    if (errors) {
       return;
     }
 
@@ -291,9 +281,12 @@ const Login: React.FC = () => {
           <div className="mt-6 text-center text-sm text-gray-400">
             <p>
               Don't have an account?{" "}
-              <button className="text-gray-300 hover:text-white font-medium transition-colors">
+              <Link
+                to="/create-user"
+                className="text-gray-300 hover:text-white font-medium transition-colors"
+              >
                 Sign up
-              </button>
+              </Link>
             </p>
           </div>
         </div>
