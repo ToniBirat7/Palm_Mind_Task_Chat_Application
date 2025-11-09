@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import { createServer } from "node:http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { authenticateJWTSocket } from "./middleware/middleware.js";
 
 const app = express();
 const server = createServer(app);
@@ -14,7 +15,7 @@ const io = new Server(server, {
   },
 });
 
-// io.use()
+io.use(authenticateJWTSocket);
 
 io.on("connection", (socket) => {
   console.log("✓ User connected:", socket.id);
