@@ -77,11 +77,9 @@ export const loginUser = async (req: Request, res: Response) => {
 
   const token = jwt.sign(jwtPayload, JWT_SECRET, options);
 
-  console.log(token);
-
   res.cookie("auth_token", token, {
     httpOnly: true,
-    secure: NODE_ENV === "production",
+    secure: false,
     sameSite: "strict",
     maxAge: 24 * 60 * 60 * 1000, // 1 day
   });

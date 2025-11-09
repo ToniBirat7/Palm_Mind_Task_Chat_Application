@@ -158,3 +158,29 @@ npm install @types/jsonwebtoken @types/bcrypt --save-dev
 ```
 
 - Use JWT for user authentication and bcrypt for password hashing.
+
+## **JWT Working**
+
+**Login Flow**
+
+1. User sends login request with credentials.
+
+2. Backend verifies credentials and generates a JWT token upon successful authentication.
+
+3. The JWT token is sent back to the client and stored in an HTTP-only, `SameSite=Strict` cookie.
+
+**Chat Flow**
+
+1. Client first tries to connect to the Socket.IO server. We send the cookie along with the connection request. We pass the cookie via `Auth` header as shown below:
+
+```ts
+const socket = io("http://localhost:3000", {
+  auth: {
+    token: document.cookie, // Send Cookies with the Connection Request
+  },
+});
+```
+
+2. On the server side, we extract the JWT token from the cookie in the `auth` header during the Socket.IO connection handshake. We verify the token to authenticate the user before establishing the connection.
+
+<hr>

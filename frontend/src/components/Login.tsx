@@ -61,6 +61,7 @@ const Login: React.FC = () => {
     try {
       const response = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
+        credentials: "include", // Include Any Cookies with the Request
         headers: {
           "Content-Type": "application/json",
         },

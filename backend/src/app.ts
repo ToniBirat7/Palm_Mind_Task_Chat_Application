@@ -14,6 +14,8 @@ const io = new Server(server, {
   },
 });
 
+// io.use()
+
 io.on("connection", (socket) => {
   console.log("✓ User connected:", socket.id);
   socket.send({ sender: "Server", msg: socket.id });
@@ -33,7 +35,12 @@ io.on("connection", (socket) => {
 });
 
 // Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true, // Allow Cookies to be sent to the CORS
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

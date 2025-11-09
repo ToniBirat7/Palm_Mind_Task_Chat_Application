@@ -1,7 +1,7 @@
 // For Routes
 import { Router } from "express";
 import { createUser, loginUser } from "../controller/auth.js";
-import { authenticateJWT } from "../middleware/middleware.js";
+import { authenticateJWTHTTP } from "../middleware/middleware.js";
 import {
   saveConvo,
   getConvo,
@@ -18,7 +18,7 @@ authRouter.post("/login", loginUser);
 const chatRouter = Router();
 
 // Middleware
-chatRouter.use(authenticateJWT);
+chatRouter.use(authenticateJWTHTTP);
 
 chatRouter.get("/get", getConvo);
 chatRouter.post("/save", saveConvo);
