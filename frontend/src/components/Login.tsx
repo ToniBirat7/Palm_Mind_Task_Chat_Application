@@ -1,5 +1,6 @@
-import React, { useState, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import type { FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
   email: string;
@@ -14,13 +15,12 @@ interface FormErrors {
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [apiError, setApiError] = useState<string>('');
 
   // Email validation
   const validateEmail = (email: string): boolean => {
@@ -34,23 +34,22 @@ const Login: React.FC = () => {
   };
 
   // Validate form
-  const validateForm = (): boolean => {
+  const validateForm = (): void => {
     const newErrors: FormErrors = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (!validatePassword(formData.password)) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   // Handle input change
@@ -60,35 +59,23 @@ const Login: React.FC = () => {
       ...prev,
       [name]: value,
     }));
-    // Clear error for this field
-    if (errors[name as keyof FormErrors]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: undefined,
-      }));
-    }
-    // Clear API error
-    if (apiError) {
-      setApiError('');
-    }
   };
 
   // Handle form submit
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setApiError('');
 
-    if (!validateForm()) {
+    if (!errors) {
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:3000/auth/create-user', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/auth/create-user", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: formData.email,
@@ -99,17 +86,14 @@ const Login: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to create user');
+        throw new Error(data.message || "Failed to create user");
       }
 
       // Success - redirect to chat or dashboard
-      console.log('User created successfully:', data);
-      navigate('/chat');
+      console.log("User created successfully:", data);
+      navigate("/chat");
     } catch (error) {
-      console.error('Login error:', error);
-      setApiError(
-        error instanceof Error ? error.message : 'An error occurred. Please try again.'
-      );
+      console.error("Login error:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -177,9 +161,9 @@ const Login: React.FC = () => {
                 value={formData.email}
                 onChange={handleChange}
                 className={`w-full bg-[#2a2a2a] text-white border ${
-                  errors.email ? 'border-red-500' : 'border-[#3a3a3a]'
+                  errors.email ? "border-red-500" : "border-[#3a3a3a]"
                 } rounded-lg px-4 py-3 focus:outline-none focus:ring-2 ${
-                  errors.email ? 'focus:ring-red-500' : 'focus:ring-gray-600'
+                  errors.email ? "focus:ring-red-500" : "focus:ring-gray-600"
                 } placeholder-gray-500 transition-all`}
                 placeholder="you@example.com"
                 disabled={isSubmitting}
@@ -212,15 +196,17 @@ const Login: React.FC = () => {
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   className={`w-full bg-[#2a2a2a] text-white border ${
-                    errors.password ? 'border-red-500' : 'border-[#3a3a3a]'
+                    errors.password ? "border-red-500" : "border-[#3a3a3a]"
                   } rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 ${
-                    errors.password ? 'focus:ring-red-500' : 'focus:ring-gray-600'
+                    errors.password
+                      ? "focus:ring-red-500"
+                      : "focus:ring-gray-600"
                   } placeholder-gray-500 transition-all`}
                   placeholder="Enter your password"
                   disabled={isSubmitting}
@@ -291,7 +277,7 @@ const Login: React.FC = () => {
               type="submit"
               disabled={isSubmitting}
               className="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              style={{ boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)' }}
+              style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)" }}
             >
               {isSubmitting ? (
                 <>
@@ -318,7 +304,7 @@ const Login: React.FC = () => {
                   <span>Signing in...</span>
                 </>
               ) : (
-                'Sign In'
+                "Sign In"
               )}
             </button>
           </form>
@@ -326,7 +312,7 @@ const Login: React.FC = () => {
           {/* Footer Links */}
           <div className="mt-6 text-center text-sm text-gray-400">
             <p>
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <button className="text-gray-300 hover:text-white font-medium transition-colors">
                 Sign up
               </button>

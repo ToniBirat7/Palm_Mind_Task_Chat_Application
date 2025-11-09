@@ -1,15 +1,17 @@
-import React, { useState } from "react";
-import Sidebar from "./components/Sidebar";
-import ChatWindow from "./components/ChatWindow";
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./components/Login";
+import Chat from "./components/Chat";
 
 const App: React.FC = () => {
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
-
   return (
-    <div className="chat-container">
-      <Sidebar selectedUser={selectedUser} onSelectUser={setSelectedUser} />
-      <ChatWindow selectedUser={selectedUser} />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
