@@ -1,6 +1,6 @@
 // Related to auths
 import type { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { type SignOptions } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import {
   BCRYPT_SALT_ROUNDS,
@@ -67,12 +67,14 @@ export const loginUser = async (req: Request, res: Response) => {
 
   const isMatch = await bcrypt.compare(password, user.password);
 
-  const token = jwt.sign(jwtPayload, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN || "7d",
-    algorithm: "HS256",
-  });
-
   if (!isMatch) return res.status(401).json({ msg: "Invalid credentials" });
+
+  const options: SignOptions = {
+    expiresIn: (JWT_EXPIRES_IN || "7d") as any,
+    algorithm: "HS256",
+  };
+
+  const token = jwt.sign(jwtPayload, JWT_SECRET, options);
 
   res.status(200).json({ msg: "Password Matched" });
 };
