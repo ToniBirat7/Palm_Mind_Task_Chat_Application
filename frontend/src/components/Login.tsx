@@ -54,6 +54,7 @@ const Login: React.FC = () => {
 
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    validateForm();
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -102,7 +103,6 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        {/* Logo/Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-700 rounded-full mb-4">
             <svg
@@ -126,26 +126,6 @@ const Login: React.FC = () => {
         {/* Login Form */}
         <div className="bg-[#1a1a1a] rounded-lg p-8 shadow-xl border border-[#3a3a3a]">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* API Error Message */}
-            {apiError && (
-              <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 animate-fade-in">
-                <div className="flex items-center gap-2">
-                  <svg
-                    className="w-5 h-5 text-red-500"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <p className="text-sm text-red-400">{apiError}</p>
-                </div>
-              </div>
-            )}
-
             {/* Email Field */}
             <div>
               <label
@@ -308,8 +288,6 @@ const Login: React.FC = () => {
               )}
             </button>
           </form>
-
-          {/* Footer Links */}
           <div className="mt-6 text-center text-sm text-gray-400">
             <p>
               Don't have an account?{" "}
@@ -319,11 +297,6 @@ const Login: React.FC = () => {
             </p>
           </div>
         </div>
-
-        {/* Additional Info */}
-        <p className="text-center text-xs text-gray-500 mt-6">
-          By signing in, you agree to our Terms of Service and Privacy Policy
-        </p>
       </div>
     </div>
   );
