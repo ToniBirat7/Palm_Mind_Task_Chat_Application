@@ -35,15 +35,7 @@ export const authenticateJWTSocket = (
 
   if (!cookieHeader) return next(new Error("Auth header missing"));
 
-  console.log("Header");
-
-  console.log(cookieHeader);
-
   const token = cookieHeader.split("=")[1];
-
-  console.log("Cookie");
-
-  console.log(token);
 
   if (!token) return next(new Error("Auth token missing"));
 
