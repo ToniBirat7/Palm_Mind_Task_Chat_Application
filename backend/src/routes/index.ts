@@ -11,13 +11,13 @@ import {
 
 //  Auth Router
 const authRouter = Router();
-
 authRouter.post("/create-user", createUser);
-authRouter.post("/login", authenticateJWT, loginUser);
+authRouter.post("/login", loginUser);
 
 //  Chat Router
 const chatRouter = Router();
 
+// Middleware
 chatRouter.use(authenticateJWT);
 
 chatRouter.get("/get", getConvo);

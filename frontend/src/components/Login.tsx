@@ -49,21 +49,17 @@ const Login: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+    validateForm();
   };
 
   // Handle form submit
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    validateForm();
     e.preventDefault();
-
-    if (errors) {
-      return;
-    }
 
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost:3000/auth/create-user", {
+      const response = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
