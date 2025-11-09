@@ -15,19 +15,33 @@ const io = new Server(server, {
   },
 });
 
+// Middleware for Socket JWT
 io.use(authenticateJWTSocket);
+
+const socket_member = new Map<string, Member>();
 
 io.on("connection", (socket) => {
   console.log("✓ User connected:", socket.id);
   socket.send({ sender: "Server", msg: socket.id });
 
+  console.log(Array.from(socket_member.values()));
+
   socket.on("join-room", (roomId) => {
-    console.log("Adding in the room : ", roomId);
+    console.log("Adding in the room:", roomId);
     socket.join(roomId);
+
     const member = socket.data.user;
     member.status = true;
-    member.avatar = member.name.split[0];
-    socket.emit("member", member);
+    member.avatar = member.name.split(" ")[0];
+
+    // Broadcast to OTHER users in room (not including sender)
+    socket.to(roomId).emit("member", member);
+
+    // Optionally: Send list of existing members to the new user
+    socket.emit("member", Array.from(socket_member.values()));
+
+    // Add itself in the chat
+    socket_member.set(socket.id, member);
   });
 
   socket.on("send_message", (data, roomId) => {

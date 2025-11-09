@@ -7,6 +7,8 @@ interface Member {
 
 interface ServerToClientEvents {
   message: (data: string) => void;
+  member: (memberData: Member) => void;
+  receive_message: (data: any) => void;
 }
 
 interface ClientToServerEvents {

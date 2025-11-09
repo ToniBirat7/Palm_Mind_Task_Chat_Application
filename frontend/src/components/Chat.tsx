@@ -5,6 +5,7 @@ import { useSocketContext } from "./SocketProvider";
 
 const Chat: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<Member | null>(null);
+
   const { socket, members } = useSocketContext();
 
   console.log("Members", members);
