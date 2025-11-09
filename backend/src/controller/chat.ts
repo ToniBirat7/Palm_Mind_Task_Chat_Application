@@ -1,8 +1,6 @@
 // Related to chats
 import type { Request, Response } from "express";
 
-import { Conversation } from "../model/chat.model.js";
-
 export const saveConvo = (req: Request, res: Response) => {
   res.json();
 };

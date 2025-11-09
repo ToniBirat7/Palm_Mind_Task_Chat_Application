@@ -1,6 +1,6 @@
 // Related to auths
 import type { Request, Response, NextFunction } from "express";
-import { Jwt } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { BCRYPT_SALT_ROUNDS } from "../config/index.js";
 
