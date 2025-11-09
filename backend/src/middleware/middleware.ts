@@ -31,18 +31,26 @@ export const authenticateJWTSocket = (
   socket: Socket,
   next: (err?: ExtendedError) => void
 ) => {
-  const authHeader: string | undefined =
-    socket.handshake.headers["authorization"];
+  const cookieHeader: string | undefined = socket.handshake.headers.cookie;
 
-  if (!authHeader) return next(new Error("Auth header missing"));
+  if (!cookieHeader) return next(new Error("Auth header missing"));
 
-  const token = authHeader.split(" ")[1]; // Bearer <token>
+  console.log("Header");
+
+  console.log(cookieHeader);
+
+  const token = cookieHeader.split("=")[1];
+
+  console.log("Cookie");
+
+  console.log(token);
 
   if (!token) return next(new Error("Auth token missing"));
 
   try {
     jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
       if (err) {
+        console.log("Error : Token Is Not Valid ");
         return next(new Error("Invalid token"));
       }
       socket.data.user = decoded;

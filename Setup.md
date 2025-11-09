@@ -174,13 +174,13 @@ npm install @types/jsonwebtoken @types/bcrypt --save-dev
 1. Client first tries to connect to the Socket.IO server. We send the cookie along with the connection request. We pass the cookie via `Auth` header as shown below:
 
 ```ts
+// Frontend
 const socket = io("http://localhost:3000", {
-  auth: {
-    token: document.cookie, // Send Cookies with the Connection Request
-  },
+  transports: ["websocket"],
+  withCredentials: true, // Ensure Cookies are sent with the Request
 });
 ```
 
-2. On the server side, we extract the JWT token from the cookie in the `auth` header during the Socket.IO connection handshake. We verify the token to authenticate the user before establishing the connection.
+2. On the server side, we extract the JWT token from the cookie in the `Headers` i.e. `socket.handshake.headers.cookie` header during the Socket.IO connection handshake. We verify the token to authenticate the user before establishing the connection. This is done using a middleware function for Socket.IO.
 
 <hr>
