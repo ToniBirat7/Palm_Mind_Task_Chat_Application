@@ -3,12 +3,27 @@ import React, { type ReactNode } from "react";
 import { Socket } from "socket.io-client";
 import useSocket from "../hooks/useSocket";
 
-const SocketContext = React.createContext<Socket | null>(null);
+interface Member {
+  _id: string;
+  name: string;
+  status: boolean;
+  avatar: string;
+}
+
+interface SocketContextType {
+  socket: Socket | null;
+  members: Member[];
+}
+
+const SocketContext = React.createContext<SocketContextType>({
+  socket: null,
+  members: [],
+});
 
 export const SocketProvider: React.FC<{ children: ReactNode }> = (props) => {
-  const socket = useSocket();
+  const { socket, members } = useSocket();
   return (
-    <SocketContext.Provider value={socket}>
+    <SocketContext.Provider value={{ socket, members }}>
       {props.children}
     </SocketContext.Provider>
   );

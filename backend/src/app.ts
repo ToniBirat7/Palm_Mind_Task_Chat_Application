@@ -24,6 +24,10 @@ io.on("connection", (socket) => {
   socket.on("join-room", (roomId) => {
     console.log("Adding in the room : ", roomId);
     socket.join(roomId);
+    const member = socket.data.user;
+    member.status = true;
+    member.avatar = member.name.split[0];
+    socket.emit("member", member);
   });
 
   socket.on("send_message", (data, roomId) => {

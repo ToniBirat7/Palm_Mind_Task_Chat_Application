@@ -63,7 +63,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
   const jwtPayload = {
     _id: user._id,
-    email: user.email,
+    name: user.fname + " " + user.lname,
   };
 
   const isMatch = await bcrypt.compare(password, user.password);

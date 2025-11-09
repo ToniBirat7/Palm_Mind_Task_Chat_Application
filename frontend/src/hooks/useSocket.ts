@@ -1,5 +1,5 @@
 // src/hooks/useSocket.ts
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 
@@ -12,9 +12,17 @@ interface ClientToServerEvents {
   message: (data: string) => void;
 }
 
-const useSocket = (): Socket<ServerToClientEvents, ClientToServerEvents> => {
+interface Member {
+  _id: string;
+  name: string;
+  status: boolean;
+  avatar: string;
+}
+
+const useSocket = (): { socket: Socket<ServerToClientEvents, ClientToServerEvents>; members: Member[] } => {
   // Navigator
   const loginNavigator = useNavigate();
+  const [members, setMembers] = useState<Member[]>([]);
 
   // create socket only once (memoized)
   const socket = useMemo<
@@ -49,10 +57,17 @@ const useSocket = (): Socket<ServerToClientEvents, ClientToServerEvents> => {
       console.log("Message Received ", data);
     });
 
+    s.on("member", (memberData) => {
+      console.log("Member Details : ", memberData);
+      setMembers((prev) => {
+        return [...prev, memberData];
+      });
+    });
+
     return s;
   }, []);
 
-  return socket;
+  return { socket, members };
 };
 
 export default useSocket;

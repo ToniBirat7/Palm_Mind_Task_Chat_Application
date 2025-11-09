@@ -11,3 +11,10 @@ interface FormData {
   password: string;
   address: string;
 }
+
+interface Member {
+  _id: string;
+  name: string;
+  status: boolean;
+  avatar: string;
+}
