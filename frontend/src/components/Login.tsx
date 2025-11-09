@@ -75,9 +75,7 @@ const Login: React.FC = () => {
       if (!response.ok) {
         throw new Error(data.message || "Failed to create user");
       }
-
-      // Success - redirect to chat or dashboard
-      console.log("User created successfully:", data);
+      console.log("User Logged In:", data);
       navigate("/chat");
     } catch (error) {
       console.error("Login error:", error);
