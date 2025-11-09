@@ -49,12 +49,5 @@
     "skipLibCheck": true
   },
   "include": ["src"],
-  "exclude": ["node_modules"],
-  "ts-node": {
-    "esm": true,
-    "experimentalEsm": true,
-    "compilerOptions": {
-      "module": "nodenext"
-    }
-  }
+  "exclude": ["node_modules"]
 }
