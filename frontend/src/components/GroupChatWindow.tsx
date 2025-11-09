@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import NoChat from "./NoChat";
 
@@ -15,90 +15,66 @@ interface GroupChatWindowProps {
 interface GroupMessage {
   id: string;
   text: string;
-  sender: {
-    name: string;
-    avatar: string;
-    isMe: boolean;
-  };
-  timestamp: Date;
+  sender: string;
+  receiver: "_chat_room";
+  timestamp: Date | string;
+  senderId?: string;
 }
 
 const GroupChatWindow: React.FC<GroupChatWindowProps> = ({
   selectedGroup,
   socket,
 }) => {
-  const [messages, setMessages] = useState<GroupMessage[]>([
-    {
-      id: "1",
-      text: "Welcome to the group chat!",
-      sender: { name: "Admin", avatar: "AD", isMe: false },
-      timestamp: new Date(Date.now() - 7200000),
-    },
-    {
-      id: "2",
-      text: "Hey everyone! 👋",
-      sender: { name: "Samrat Karki", avatar: "SK", isMe: false },
-      timestamp: new Date(Date.now() - 3600000),
-    },
-    {
-      id: "3",
-      text: "Hi! How's everyone doing?",
-      sender: { name: "You", avatar: "ME", isMe: true },
-      timestamp: new Date(Date.now() - 3500000),
-    },
-    {
-      id: "4",
-      text: "Great! Working on the project.",
-      sender: { name: "Suman Karki", avatar: "SU", isMe: false },
-      timestamp: new Date(Date.now() - 3400000),
-    },
-    {
-      id: "5",
-      text: "Awesome! Let me know if you need any help 🚀",
-      sender: { name: "You", avatar: "ME", isMe: true },
-      timestamp: new Date(Date.now() - 100000),
-    },
-  ]);
+  const [messages, setMessages] = useState<GroupMessage[]>([]);
 
   const [inputValue, setInputValue] = useState("");
   const [showMembers, setShowMembers] = useState(false);
+
+  useEffect(() => {
+    const handleReceiveMessage = (grpMsg: GroupMessage) => {
+      console.log("Message Received ", grpMsg);
+      setMessages((prev) => {
+        return [...prev, grpMsg];
+      });
+    };
+
+    socket?.on("receive_message", handleReceiveMessage);
+
+    return () => {
+      socket?.off("receive_message", handleReceiveMessage);
+    };
+  }, [socket]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim() && selectedGroup) {
       const newMessage: GroupMessage = {
-        id: String(messages.length + 1),
+        id: `${Date.now()}-${Math.random().toString(36)}`,
         text: inputValue,
-        sender: { name: "You", avatar: "ME", isMe: true },
+        sender: "user", // Will be set to actual name by backend
+        receiver: "_chat_room",
         timestamp: new Date(),
       };
 
-      // Emit to group room - using 'as any' temporarily until socket types are updated
-      (socket as any)?.emit(
-        "send_message",
-        newMessage,
-        `group_${selectedGroup.id}`
-      );
+      socket?.emit("send_message", newMessage, `_chat_room`);
 
-      setMessages([...messages, newMessage]);
       setInputValue("");
     }
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("en-US", {
+  const formatTime = (date: Date | string) => {
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+
+    // Check if date is valid
+    if (isNaN(dateObj.getTime())) {
+      return "Invalid time";
+    }
+
+    return dateObj.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
     });
   };
-
-  // Mock members data
-  const members = [
-    { id: "1", name: "You", avatar: "ME", status: true },
-    { id: "2", name: "Samrat Karki", avatar: "SK", status: true },
-    { id: "3", name: "Suman Karki", avatar: "SU", status: true },
-    { id: "4", name: "Admin", avatar: "AD", status: false },
-  ];
 
   return (
     <div className="chat-main">
@@ -186,44 +162,53 @@ const GroupChatWindow: React.FC<GroupChatWindowProps> = ({
               }`}
             >
               <div className="messages-list">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${
-                      message.sender.isMe ? "justify-end" : "justify-start"
-                    } animate-fade-in`}
-                  >
-                    <div className="flex flex-col gap-1 max-w-[70%]">
-                      {/* Show sender name for group messages */}
-                      {!message.sender.isMe && (
-                        <div className="flex items-center gap-2 px-2">
-                          <div className="w-6 h-6 bg-[#3a3a3a] rounded-full flex items-center justify-center text-white text-xs font-bold">
-                            {message.sender.avatar}
+                {messages.map((message) => {
+                  const isMyMessage = message.sender === "user";
+                  const senderInitials = isMyMessage
+                    ? "ME"
+                    : message.sender
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .slice(0, 2);
+
+                  return (
+                    <div
+                      key={message.id}
+                      className={`flex ${
+                        isMyMessage ? "justify-end" : "justify-start"
+                      } animate-fade-in`}
+                    >
+                      <div className="flex flex-col gap-1 max-w-[70%]">
+                        {/* Show sender name for group messages */}
+                        {!isMyMessage && (
+                          <div className="flex items-center gap-2 px-2">
+                            <div className="w-6 h-6 bg-[#3a3a3a] rounded-full flex items-center justify-center text-white text-xs font-bold">
+                              {senderInitials}
+                            </div>
+                            <span className="text-xs text-gray-400 font-medium">
+                              {message.sender}
+                            </span>
                           </div>
-                          <span className="text-xs text-gray-400 font-medium">
-                            {message.sender.name}
-                          </span>
+                        )}
+                        <div
+                          className={`${
+                            isMyMessage ? "message-sent" : "message-received"
+                          }`}
+                        >
+                          <p className="text-sm">{message.text}</p>
                         </div>
-                      )}
-                      <div
-                        className={`${
-                          message.sender.isMe
-                            ? "message-sent"
-                            : "message-received"
-                        }`}
-                      >
-                        <p className="text-sm">{message.text}</p>
+                        <span
+                          className={`text-xs text-gray-500 px-2 ${
+                            isMyMessage ? "text-right" : "text-left"
+                          }`}
+                        >
+                          {formatTime(message.timestamp)}
+                        </span>
                       </div>
-                      <span
-                        className={`text-xs text-gray-500 px-2 ${
-                          message.sender.isMe ? "text-right" : "text-left"
-                        }`}
-                      >
-                        {formatTime(message.timestamp)}
-                      </span>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Input Area */}
@@ -295,35 +280,8 @@ const GroupChatWindow: React.FC<GroupChatWindowProps> = ({
                 <div className="px-4 py-3 border-b border-[#3a3a3a]">
                   <h3 className="text-white font-semibold">Group Members</h3>
                   <p className="text-xs text-gray-400 mt-1">
-                    {members.length} members
+                    {selectedGroup.memberCount} members
                   </p>
-                </div>
-                <div className="flex-1 overflow-y-auto">
-                  {members.map((member) => (
-                    <div
-                      key={member.id}
-                      className="px-4 py-3 hover:bg-[#2a2a2a] transition-colors border-b border-[#2a2a2a]"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <div className="w-10 h-10 bg-[#3a3a3a] rounded-full flex items-center justify-center text-white font-bold text-xs">
-                            {member.avatar}
-                          </div>
-                          {member.status && (
-                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#1a1a1a]"></div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-white text-sm font-medium truncate">
-                            {member.name}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {member.status ? "Active" : "Offline"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
                 </div>
                 <div className="p-3 border-t border-[#3a3a3a]">
                   <button className="w-full py-2 px-4 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2">

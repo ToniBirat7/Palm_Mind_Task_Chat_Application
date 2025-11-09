@@ -67,16 +67,11 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = (props) => {
       }
     };
 
-    const handleReceiveMessage = (data: any) => {
-      console.log("Message Received ", data);
-    };
-
     // Register listeners
     socket.on("connect", handleConnect);
     socket.on("disconnect", handleDisconnect);
     socket.on("member", handleMember);
     socket.on("connect_error", handleConnectError);
-    socket.on("receive_message", handleReceiveMessage);
 
     // Cleanup on unmount
     return () => {
@@ -84,7 +79,6 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = (props) => {
       socket.off("disconnect", handleDisconnect);
       socket.off("member", handleMember);
       socket.off("connect_error", handleConnectError);
-      socket.off("receive_message", handleReceiveMessage);
     };
   }, [socket]);
 

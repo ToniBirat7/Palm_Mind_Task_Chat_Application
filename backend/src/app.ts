@@ -5,8 +5,8 @@ import { createServer } from "node:http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { authenticateJWTSocket } from "./middleware/middleware.js";
-import { User } from "./model/user.model.js";
 import { Conversation } from "./model/chat.model.js";
+import { GroupChat } from "./model/group_chat.model.js";
 
 const app = express();
 const server = createServer(app);
@@ -21,7 +21,6 @@ const io = new Server(server, {
 io.use(authenticateJWTSocket);
 
 const socket_member = new Map<string, Member>();
-const email_socketId = new Map<string, string>();
 
 io.on("connection", (socket) => {
   console.log("✓ User connected:", socket.id);
@@ -45,15 +44,15 @@ io.on("connection", (socket) => {
     socket_member.set(socket.id, member);
   });
 
-  socket.on("private-room", (data) => {
-    console.log("Private-Room : ", data);
-    socket.join(data);
+  socket.on("private-room", (privateRoomId) => {
+    console.log("Private-Room : ", privateRoomId);
+    socket.join(privateRoomId);
   });
 
   socket.on("send_private_message", async (msg, receiverId) => {
     const sender = socket.data.user;
 
-    // Define both user rooms
+    // user rooms
     const receiverRoom = `${receiverId}`;
     const senderRoom = `${sender._id}`;
 
@@ -79,16 +78,45 @@ io.on("connection", (socket) => {
       senderId: sender._id,
     };
 
-    // Emit to receiver
+    // to receiver
     io.to(receiverRoom).emit("receive_private_message", messageToReceiver);
 
-    // Emit back to sender (for instant UI update)
+    // to sender (for instant UI update)
     io.to(senderRoom).emit("receive_private_message", messageToSender);
   });
 
-  socket.on("send_message", (data, roomId) => {
-    console.log("Received Msg : ", data);
-    socket.to(roomId).emit("receive_message", data);
+  socket.on("send_message", async (grpMsg, roomId) => {
+    console.log("Received Msg : ", grpMsg);
+
+    const sender = socket.data.user;
+
+    // Save to DB with correct format
+    const savedMsg = await GroupChat.create({
+      sender: sender._id,
+      receiver: roomId,
+      message: grpMsg.text,
+      timestamp: grpMsg.timestamp,
+    });
+
+    // Message for other members in the room
+    const messageToOthers = {
+      ...grpMsg,
+      sender: sender.name,
+      senderId: sender._id,
+    };
+
+    // Message for sender (mark as "user")
+    const messageToSender = {
+      ...grpMsg,
+      sender: "user",
+      senderId: sender._id,
+    };
+
+    // Broadcast to others in room
+    socket.to(roomId).emit("receive_message", messageToOthers);
+
+    // Send back to sender (for instant UI update)
+    socket.emit("receive_message", messageToSender);
   });
 
   socket.on("disconnect", () => {

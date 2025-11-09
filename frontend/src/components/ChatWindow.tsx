@@ -15,38 +15,7 @@ interface Message {
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      text: "Hey! How are you doing?",
-      sender: "other",
-      timestamp: new Date(Date.now() - 3600000),
-    },
-    {
-      id: "2",
-      text: "I'm doing great! Just working on the chat app. How about you?",
-      sender: "user",
-      timestamp: new Date(Date.now() - 3500000),
-    },
-    {
-      id: "3",
-      text: "That sounds cool! Are you using React?",
-      sender: "other",
-      timestamp: new Date(Date.now() - 3400000),
-    },
-    {
-      id: "4",
-      text: "Yes! React with TypeScript and Tailwind CSS. Really clean setup!",
-      sender: "user",
-      timestamp: new Date(Date.now() - 3300000),
-    },
-    {
-      id: "5",
-      text: "Nice! The UI looks amazing with that monochromatic theme 🖤",
-      sender: "other",
-      timestamp: new Date(Date.now() - 100000),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const [inputValue, setInputValue] = useState("");
 
@@ -70,7 +39,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
     e.preventDefault();
     if (inputValue.trim()) {
       const newMessage: Message = {
-        id: String(messages.length + 1),
+        id: `${Date.now()}-${Math.random().toString(36)}`,
         text: inputValue,
         sender: "User",
         timestamp: new Date(),
