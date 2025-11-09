@@ -15,26 +15,31 @@ export const createUser = async (req: Request, res: Response) => {
 
   const { email, password } = body;
 
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    return res.status(409).json({ msg: "User already exists" });
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ msg: "User already exists" });
+    }
+
+    // Hash password before saving
+    const salt = await bcrypt.genSalt(Number(BCRYPT_SALT_ROUNDS));
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create new user
+    const newUser = new User({
+      email,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+
+    return res
+      .status(201)
+      .json({ msg: "User created successfully", user: { email } });
+  } catch (error) {
+    console.error("Error creating user:", err);
+    return res.status(500).json({ msg: "Internal server error" });
   }
-
-  // Hash password before saving
-  const salt = await bcrypt.genSalt(Number(BCRYPT_SALT_ROUNDS));
-  const hashedPassword = await bcrypt.hash(password, salt);
-
-  // Create new user
-  const newUser = new User({
-    email,
-    password: hashedPassword,
-  });
-
-  await newUser.save();
-
-  return res
-    .status(201)
-    .json({ msg: "User created successfully", user: { email } });
 };
 
 export const loginUser = async (req: Request, res: Response) => {
