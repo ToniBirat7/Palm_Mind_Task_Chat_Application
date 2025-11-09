@@ -2,7 +2,7 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { BCRYPT_SALT_ROUNDS } from "../config/index.js";
+import { BCRYPT_SALT_ROUNDS, JWT_SECRET } from "../config/index.js";
 import { User } from "../model/chat.model.js";
 
 export const createUser = async (req: Request, res: Response) => {
@@ -56,8 +56,16 @@ export const loginUser = async (req: Request, res: Response) => {
   const salt = await bcrypt.genSalt(Number(BCRYPT_SALT_ROUNDS));
   const hashedPassword = await bcrypt.hash(password, salt);
 
+  const jwtPayload = {
+    _id: user._id,
+    name: user.fname + user.lname,
+    email: user.email,
+  };
+
   if (user.password === hashedPassword) {
-    console.log("Hash Password Match");
+    const token = jwt.sign(jwtPayload, JWT_SECRET, {
+      
+    });
   }
 
   res.status(200).json({ msg: "Password Matched" });
