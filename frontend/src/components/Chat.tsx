@@ -7,6 +7,8 @@ const Chat: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<Member | null>(null);
   const { socket, members } = useSocketContext();
 
+  console.log("Members", members);
+
   return (
     <div className="chat-container">
       <Sidebar
@@ -14,11 +16,7 @@ const Chat: React.FC = () => {
         onSelectUser={setSelectedUser}
         members={members}
       />
-      <ChatWindow
-        selectedUser={selectedUser}
-        socket={socket as any}
-        members={members}
-      />
+      <ChatWindow selectedUser={selectedUser} socket={socket as any} />
     </div>
   );
 };
