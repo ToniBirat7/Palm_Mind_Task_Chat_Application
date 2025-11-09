@@ -5,6 +5,8 @@ import { createServer } from "node:http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { authenticateJWTSocket } from "./middleware/middleware.js";
+import { User } from "./model/user.model.js";
+import { Conversation } from "./model/chat.model.js";
 
 const app = express();
 const server = createServer(app);
@@ -19,12 +21,11 @@ const io = new Server(server, {
 io.use(authenticateJWTSocket);
 
 const socket_member = new Map<string, Member>();
+const email_socketId = new Map<string, string>();
 
 io.on("connection", (socket) => {
   console.log("✓ User connected:", socket.id);
   socket.send({ sender: "Server", msg: socket.id });
-
-  console.log(Array.from(socket_member.values()));
 
   socket.on("join-room", (roomId) => {
     console.log("Adding in the room:", roomId);
@@ -42,6 +43,47 @@ io.on("connection", (socket) => {
 
     // Add itself in the chat
     socket_member.set(socket.id, member);
+  });
+
+  socket.on("private-room", (data) => {
+    console.log("Private-Room : ", data);
+    socket.join(data);
+  });
+
+  socket.on("send_private_message", async (msg, receiverId) => {
+    const sender = socket.data.user;
+
+    // Define both user rooms
+    const receiverRoom = `${receiverId}`;
+    const senderRoom = `${sender._id}`;
+
+    // Save to DB with correct format
+    const savedMsg = await Conversation.create({
+      sender: sender._id,
+      receiver: receiverId,
+      message: msg.text,
+      timestamp: msg.timestamp,
+    });
+
+    // message for receiver
+    const messageToReceiver = {
+      ...msg,
+      sender: sender.name,
+      senderId: sender._id,
+    };
+
+    // message for sender
+    const messageToSender = {
+      ...msg,
+      sender: "user",
+      senderId: sender._id,
+    };
+
+    // Emit to receiver
+    io.to(receiverRoom).emit("receive_private_message", messageToReceiver);
+
+    // Emit back to sender (for instant UI update)
+    io.to(senderRoom).emit("receive_private_message", messageToSender);
   });
 
   socket.on("send_message", (data, roomId) => {

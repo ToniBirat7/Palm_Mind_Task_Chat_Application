@@ -2,14 +2,30 @@ import React, { useState } from "react";
 
 interface SidebarProps {
   selectedUser: Member | null;
-  onSelectUser: (user: Member) => void;
+  onSelectUser: (user: Member | null) => void;
   members: Member[];
+  selectedGroup: {
+    id: string;
+    name: string;
+    avatar: string;
+    memberCount: number;
+  } | null;
+  onSelectGroup: (
+    group: {
+      id: string;
+      name: string;
+      avatar: string;
+      memberCount: number;
+    } | null
+  ) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
   selectedUser,
   onSelectUser,
   members,
+  selectedGroup,
+  onSelectGroup,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"personal" | "groups">("personal");
@@ -20,10 +36,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Mock groups data - you can replace this with actual data later
+  // Single Group
   const groups = [
     {
-      id: "",
+      id: "global",
       name: "Global Chat",
       avatar: "GC",
       memberCount: filteredUsers.length,
@@ -129,7 +145,10 @@ const Sidebar: React.FC<SidebarProps> = ({
               {filteredUsers.map((user) => (
                 <div
                   key={user._id}
-                  onClick={() => onSelectUser(user)}
+                  onClick={() => {
+                    onSelectUser(user);
+                    onSelectGroup(null);
+                  }}
                   className={`user-item ${
                     selectedUser?._id === user._id ? "active" : ""
                   }`}
@@ -181,7 +200,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             {groups.map((group) => (
               <div
                 key={group.id}
-                className="px-4 py-3 hover:bg-[#2a2a2a] cursor-pointer transition-colors border-b border-[#2a2a2a]"
+                onClick={() => {
+                  onSelectGroup(group);
+                  onSelectUser(null);
+                }}
+                className={`px-4 py-3 hover:bg-[#2a2a2a] cursor-pointer transition-colors border-b border-[#2a2a2a] ${
+                  selectedGroup?.id === group.id ? "bg-[#2a2a2a]" : ""
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="relative">

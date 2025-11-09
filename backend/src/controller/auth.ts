@@ -8,7 +8,7 @@ import {
   JWT_SECRET,
   NODE_ENV,
 } from "../config/index.js";
-import { User } from "../model/chat.model.js";
+import { User } from "../model/user.model.js";
 
 export const createUser = async (req: Request, res: Response) => {
   const body: FormData = req.body;
