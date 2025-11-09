@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import CreateUser from "./components/CreateUser";
 import Chat from "./components/Chat";
+import { SocketProvider } from "./components/SocketProvider.tsx";
 
 const App: React.FC = () => {
   return (
@@ -10,7 +11,14 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/create-user" element={<CreateUser />} />
-        <Route path="/chat" element={<Chat />} />
+        <Route
+          path="/chat"
+          element={
+            <SocketProvider>
+              <Chat />
+            </SocketProvider>
+          }
+        />
         <Route path="/" element={<Navigate to="/create-user" replace />} />
       </Routes>
     </BrowserRouter>

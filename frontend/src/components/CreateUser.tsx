@@ -78,16 +78,13 @@ const CreateUser: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+    validateForm();
   };
 
   // Handle form submit
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    validateForm();
+    console.log("we are submitting");
     e.preventDefault();
-
-    if (errors) {
-      return;
-    }
 
     setIsSubmitting(true);
 
@@ -108,7 +105,6 @@ const CreateUser: React.FC = () => {
 
       // Success - redirect to login
       console.log("User created successfully:", data);
-      alert("Account created successfully! Please login.");
       navigate("/login");
     } catch (error) {
       console.error("Sign up error:", error);

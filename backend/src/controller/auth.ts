@@ -25,7 +25,7 @@ export const createUser = async (req: Request, res: Response) => {
     // Create new user
     const newUser = new User({
       email: email,
-      password: password,
+      password: hashedPassword,
       lname: lname,
       fname: fname,
       address: address,
