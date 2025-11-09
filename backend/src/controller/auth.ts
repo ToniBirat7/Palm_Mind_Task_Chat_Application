@@ -2,7 +2,11 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { BCRYPT_SALT_ROUNDS, JWT_SECRET } from "../config/index.js";
+import {
+  BCRYPT_SALT_ROUNDS,
+  JWT_EXPIRES_IN,
+  JWT_SECRET,
+} from "../config/index.js";
 import { User } from "../model/chat.model.js";
 
 export const createUser = async (req: Request, res: Response) => {
@@ -58,15 +62,17 @@ export const loginUser = async (req: Request, res: Response) => {
 
   const jwtPayload = {
     _id: user._id,
-    name: user.fname + user.lname,
     email: user.email,
   };
 
-  if (user.password === hashedPassword) {
-    const token = jwt.sign(jwtPayload, JWT_SECRET, {
-      
-    });
-  }
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  const token = jwt.sign(jwtPayload, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN || "7d",
+    algorithm: "HS256",
+  });
+
+  if (!isMatch) return res.status(401).json({ msg: "Invalid credentials" });
 
   res.status(200).json({ msg: "Password Matched" });
 };
