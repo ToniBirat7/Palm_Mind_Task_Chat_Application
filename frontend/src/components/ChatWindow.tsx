@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import { useSocketContext } from "./SocketProvider"
 import { Socket } from "socket.io-client";
 
 interface ChatWindowProps {
@@ -50,8 +49,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
 
   const [inputValue, setInputValue] = useState("");
 
-  // const { socket, members } = useSocketContext();
-
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim()) {
@@ -75,15 +72,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
       minute: "2-digit",
     });
   };
-
-  // Mock user data
-  // const users: Record<string, { name: string; avatar: string }> = {
-  //   "1": { name: "John Doe", avatar: "JD" },
-  //   "2": { name: "Sarah Smith", avatar: "SS" },
-  //   "3": { name: "Mike Johnson", avatar: "MJ" },
-  //   "4": { name: "Emma Wilson", avatar: "EW" },
-  //   "5": { name: "Alex Brown", avatar: "AB" },
-  // };
 
   const currentUser = selectedUser;
 
