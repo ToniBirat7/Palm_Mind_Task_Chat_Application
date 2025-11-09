@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { useSocketContext } from "./SocketProvider";
+// import { useSocketContext } from "./SocketProvider"
+import { Socket } from "socket.io-client";
 
 interface ChatWindowProps {
   selectedUser: string | null;
+  socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 }
 
 interface Message {
@@ -12,7 +14,7 @@ interface Message {
   timestamp: Date;
 }
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -48,7 +50,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
 
   const [inputValue, setInputValue] = useState("");
 
-  const socketContext = useSocketContext();
+  // const { socket, members } = useSocketContext();
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +61,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
         sender: "user",
         timestamp: new Date(),
       };
-      socketContext?.emit("send_message", newMessage, "_chat_room");
+
+      socket?.emit("send_message", newMessage, "_chat_room");
+
       setMessages([...messages, newMessage]);
       setInputValue("");
     }

@@ -3,13 +3,6 @@ import React, { type ReactNode } from "react";
 import { Socket } from "socket.io-client";
 import useSocket from "../hooks/useSocket";
 
-interface Member {
-  _id: string;
-  name: string;
-  status: boolean;
-  avatar: string;
-}
-
 interface SocketContextType {
   socket: Socket | null;
   members: Member[];

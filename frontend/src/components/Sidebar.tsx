@@ -3,19 +3,26 @@ import React, { useState } from "react";
 interface SidebarProps {
   selectedUser: string | null;
   onSelectUser: (userId: string) => void;
+  members: Member[];
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedUser, onSelectUser }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  selectedUser,
+  onSelectUser,
+  members,
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Mock users data
-  const users = [
-    { id: "1", name: "John Doe", status: "online", avatar: "JD" },
-    { id: "2", name: "Sarah Smith", status: "online", avatar: "SS" },
-    { id: "3", name: "Mike Johnson", status: "offline", avatar: "MJ" },
-    { id: "4", name: "Emma Wilson", status: "online", avatar: "EW" },
-    { id: "5", name: "Alex Brown", status: "offline", avatar: "AB" },
-  ];
+  // const users = [
+  //   { id: "1", name: "John Doe", status: "online", avatar: "JD" },
+  //   { id: "2", name: "Sarah Smith", status: "online", avatar: "SS" },
+  //   { id: "3", name: "Mike Johnson", status: "offline", avatar: "MJ" },
+  //   { id: "4", name: "Emma Wilson", status: "online", avatar: "EW" },
+  //   { id: "5", name: "Alex Brown", status: "offline", avatar: "AB" },
+  // ];
+
+  const users = members;
 
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase())

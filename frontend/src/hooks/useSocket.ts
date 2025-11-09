@@ -3,22 +3,6 @@ import { useMemo, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 
-// Define types for your server events (customize these later)
-interface ServerToClientEvents {
-  message: (data: string) => void;
-}
-
-interface ClientToServerEvents {
-  message: (data: string) => void;
-}
-
-interface Member {
-  _id: string;
-  name: string;
-  status: boolean;
-  avatar: string;
-}
-
 const useSocket = (): { socket: Socket<ServerToClientEvents, ClientToServerEvents>; members: Member[] } => {
   // Navigator
   const loginNavigator = useNavigate();
