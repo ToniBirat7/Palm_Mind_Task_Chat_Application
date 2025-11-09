@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 interface SidebarProps {
-  selectedUser: string | null;
-  onSelectUser: (userId: string) => void;
+  selectedUser: Member | null;
+  onSelectUser: (user: Member) => void;
   members: Member[];
 }
 
@@ -51,15 +51,15 @@ const Sidebar: React.FC<SidebarProps> = ({
         {filteredUsers.length > 0 ? (
           filteredUsers.map((user) => (
             <div
-              key={user.id}
-              onClick={() => onSelectUser(user.id)}
+              key={user._id}
+              onClick={() => onSelectUser(user)}
               className={`user-item ${
-                selectedUser === user.id ? "active" : ""
+                selectedUser?._id === user._id ? "active" : ""
               }`}
             >
               <div className="relative">
                 <div className="avatar">{user.avatar}</div>
-                {user.status === "online" && (
+                {user.status && (
                   <div className="status-online absolute bottom-0 right-0"></div>
                 )}
               </div>
@@ -67,7 +67,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold truncate">{user.name}</p>
                 <p className="text-gray-400 text-sm truncate">
-                  {user.status === "online" ? "Active now" : "Offline"}
+                  {user.status ? "Active now" : "Offline"}
                 </p>
               </div>
             </div>

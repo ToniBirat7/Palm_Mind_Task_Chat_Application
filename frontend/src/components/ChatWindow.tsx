@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Socket } from "socket.io-client";
 
 interface ChatWindowProps {
-  selectedUser: string | null;
+  selectedUser: Member | null;
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 }
 
@@ -77,15 +77,15 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
   };
 
   // Mock user data
-  const users: Record<string, { name: string; avatar: string }> = {
-    "1": { name: "John Doe", avatar: "JD" },
-    "2": { name: "Sarah Smith", avatar: "SS" },
-    "3": { name: "Mike Johnson", avatar: "MJ" },
-    "4": { name: "Emma Wilson", avatar: "EW" },
-    "5": { name: "Alex Brown", avatar: "AB" },
-  };
+  // const users: Record<string, { name: string; avatar: string }> = {
+  //   "1": { name: "John Doe", avatar: "JD" },
+  //   "2": { name: "Sarah Smith", avatar: "SS" },
+  //   "3": { name: "Mike Johnson", avatar: "MJ" },
+  //   "4": { name: "Emma Wilson", avatar: "EW" },
+  //   "5": { name: "Alex Brown", avatar: "AB" },
+  // };
 
-  const currentUser = selectedUser && users[selectedUser];
+  const currentUser = selectedUser;
 
   return (
     <div className="chat-main">

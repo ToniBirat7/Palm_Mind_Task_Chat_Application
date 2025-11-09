@@ -4,7 +4,7 @@ import ChatWindow from "./ChatWindow";
 import { useSocketContext } from "./SocketProvider";
 
 const Chat: React.FC = () => {
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<Member | null>(null);
   const { socket, members } = useSocketContext();
 
   return (
@@ -14,7 +14,11 @@ const Chat: React.FC = () => {
         onSelectUser={setSelectedUser}
         members={members}
       />
-      <ChatWindow selectedUser={selectedUser} socket={socket} />
+      <ChatWindow
+        selectedUser={selectedUser}
+        socket={socket as any}
+        members={members}
+      />
     </div>
   );
 };
