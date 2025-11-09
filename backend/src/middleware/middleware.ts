@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import type { Request, Response, NextFunction } from "express";
 import { JWT_SECRET } from "../config/index.js";
 import type { ExtendedError, Socket } from "socket.io";
+import cookie from "cookie";
 
 export const authenticateJWTHTTP = (
   req: Request,
@@ -31,25 +32,26 @@ export const authenticateJWTSocket = (
   socket: Socket,
   next: (err?: ExtendedError) => void
 ) => {
-  const cookieHeader: string | undefined = socket.handshake.headers.cookie;
+  const cookieHeader = socket.handshake.headers.cookie;
 
-  if (!cookieHeader) return next(new Error("Auth header missing"));
+  if (!cookieHeader) {
+    console.log("No Cookie Header");
+    return next(new Error("Authentication failed: no cookie"));
+  }
 
-  const token = cookieHeader.split("=")[1];
-
-  if (!token) return next(new Error("Auth token missing"));
+  const cookies = cookie.parse(cookieHeader);
+  const token = cookies["auth_token"];
+  if (!token) {
+    console.log("No auth_token in cookies");
+    return next(new Error("Authentication failed: token missing"));
+  }
 
   try {
-    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
-      if (err) {
-        console.log("Error : Token Is Not Valid ");
-        return next(new Error("Invalid token"));
-      }
-      socket.data.user = decoded;
-      next();
-    });
-  } catch (error) {
-    console.error(error);
-    next(new Error("Invalid token"));
+    const payload = jwt.verify(token, JWT_SECRET);
+    socket.data.user = payload;
+    next();
+  } catch (err) {
+    console.log("JWT verification failed:", err);
+    next(new Error("Authentication failed: invalid token"));
   }
 };

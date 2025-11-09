@@ -19,7 +19,7 @@ const App: React.FC = () => {
             </SocketProvider>
           }
         />
-        <Route path="/" element={<Navigate to="/create-user" replace />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

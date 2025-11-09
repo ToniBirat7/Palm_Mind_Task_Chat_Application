@@ -50,8 +50,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser }) => {
 
   const socketContext = useSocketContext();
 
-  // console.log("SocketContext : ", socketContext);
-
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim()) {

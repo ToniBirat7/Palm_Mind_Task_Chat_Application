@@ -1,6 +1,7 @@
 // src/hooks/useSocket.ts
 import { useMemo } from "react";
 import { io, Socket } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 
 // Define types for your server events (customize these later)
 interface ServerToClientEvents {
@@ -12,13 +13,16 @@ interface ClientToServerEvents {
 }
 
 const useSocket = (): Socket<ServerToClientEvents, ClientToServerEvents> => {
+  // Navigator
+  const loginNavigator = useNavigate();
+
   // create socket only once (memoized)
   const socket = useMemo<
     Socket<ServerToClientEvents, ClientToServerEvents>
   >(() => {
     const s = io("http://localhost:3000", {
       transports: ["websocket"], // use WebSocket transport
-      autoConnect: true,
+      // autoConnect: true,
     });
 
     const roomId = "_chat_room";
@@ -27,6 +31,14 @@ const useSocket = (): Socket<ServerToClientEvents, ClientToServerEvents> => {
 
     s.on("connect", () => {
       console.log("✓ Connected to server:", s.id);
+    });
+
+    s.on("connect_error", (err) => {
+      console.log("Socket connection error:", err.message);
+      // Redirect to login
+      if (err.message.includes("Authentication failed")) {
+        loginNavigator("/");
+      }
     });
 
     s.on("disconnect", (reason) => {
