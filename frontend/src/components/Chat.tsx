@@ -14,7 +14,7 @@ const Chat: React.FC = () => {
         onSelectUser={setSelectedUser}
         members={members}
       />
-      <ChatWindow selectedUser={selectedUser} />
+      <ChatWindow selectedUser={selectedUser} socket={socket} />
     </div>
   );
 };
