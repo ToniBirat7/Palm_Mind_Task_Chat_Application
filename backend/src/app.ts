@@ -41,6 +41,7 @@ io.on("connection", (socket) => {
     socket.emit("member", Array.from(socket_member.values()));
 
     // Add itself in the chat
+    console.log(`"Member ${member.name} Joined Room ${roomId}"`);
     socket_member.set(socket.id, member);
   });
 

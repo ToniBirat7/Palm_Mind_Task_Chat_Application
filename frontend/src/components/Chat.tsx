@@ -29,14 +29,13 @@ const Chat: React.FC = () => {
         selectedGroup={selectedGroup}
         onSelectGroup={setSelectedGroup}
       />
-      {selectedGroup ? (
+      {selectedGroup && (
         <GroupChatWindow selectedGroup={selectedGroup} socket={socket} />
-      ) : (
-        <NoChat></NoChat>
       )}
       {selectedUser && (
         <ChatWindow selectedUser={selectedUser} socket={socket as any} />
       )}
+      {!selectedGroup && !selectedUser && <NoChat></NoChat>}
     </div>
   );
 };
