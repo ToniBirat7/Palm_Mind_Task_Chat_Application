@@ -1,7 +1,6 @@
 // React Context provider (lazy connect)
-import React, { type ReactNode } from "react";
+import React, { type ReactNode, useState, useEffect } from "react";
 import useSocket from "../hooks/useSocket";
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GLOBAL_ROOM } from "../consts";
 

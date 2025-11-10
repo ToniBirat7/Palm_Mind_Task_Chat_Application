@@ -33,7 +33,7 @@ const Chat: React.FC = () => {
         <GroupChatWindow selectedGroup={selectedGroup} socket={socket} />
       )}
       {selectedUser && (
-        <ChatWindow selectedUser={selectedUser} socket={socket as any} />
+        <ChatWindow selectedUser={selectedUser} socket={socket} />
       )}
       {!selectedGroup && !selectedUser && <NoChat></NoChat>}
     </div>

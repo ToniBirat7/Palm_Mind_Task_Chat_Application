@@ -1,158 +1,288 @@
-## Palm Mind — Task Chat Application
+# Palm Mind — Real-Time Chat Application
 
-Real-time chat application (MERN-style) with user CRUD, authentication/authorization, Socket.IO real-time messaging, and persisted chat history in MongoDB.
+A full-stack MERN application for real-time messaging with support for **private 1-on-1 chats** and **group messaging**. Built with modern TypeScript, Socket.IO for real-time communication, and MongoDB for persistent storage.
 
-### **Tech stack**
+## 🎯 Features
 
-- Backend: Node.js, Express, TypeScript/JavaScript, MongoDB (mongoose), Socket.IO
+**User Authentication** — JWT-based login/signup with secure password hashing
 
-- Frontend: React + TypeScript, Vite, Tailwind CSS
+**Real-Time Messaging** — Socket.IO instant message delivery
 
-### **Main features**
+**Private Chats** — 1-on-1 messaging between users with chat history
 
-- User registration, login (JWT) and full CRUD for users (auth protected)
+**Group Chats** — Multiple users in group conversations
 
-- Real-time messaging using Socket.IO
+**Message Persistence** — All messages stored in MongoDB
 
-- Chat messages persisted to MongoDB
+**Online Status** — Real-time member presence tracking
 
-- Live counts: total users and total chat messages
+**Responsive UI** — Tailwind CSS with monochromatic design
 
-- Frontend listens to socket events (message, user join) and updates UI live
+**Form Validation** — Email and password strength validation
 
-Getting started (developer)
+**Ambient Types** — Global TypeScript interfaces without imports
 
-### **Architecture Overview**
+## 🛠️ Tech Stack
 
-**Storing Chat Messages**
+**Backend:**
 
-- MongoDB write latency (~1–10 ms) might slightly slow down message propagation. If many users send messages simultaneously, MongoDB could become a bottleneck.
+- Node.js with Express 5.x
 
-- Client → Backend → Redis Pub/Sub → MongoDB (async write)
+- TypeScript
 
-- Backend publishes the new message into a Redis channel (fast, in-memory). All connected chat servers subscribe and broadcast instantly to clients. A background worker (or the backend itself) periodically flushes messages from Redis → MongoDB.
+- Socket.IO 4.x for real-time communication
 
-### **Prerequisites**
+- MongoDB with Mongoose
 
-- Node.js 18+ (or LTS)
+- JWT authentication
 
-- npm or yarn
+- bcrypt for password hashing
 
-- MongoDB (local or Atlas)
+**Frontend:**
 
-1. Clone
+- React 19.x
+
+- TypeScript
+
+- Vite 7.x (build tool)
+
+- Tailwind CSS 4.x
+
+- React Router 7.x
+
+- Socket.IO Client 4.x
+
+## 📦 Project Structure
+
+```
+Palm_Mind(MERN_Project)/
+├── backend/
+│   ├── src/
+│   │   ├── app.ts                 # Express + Socket.IO server
+│   │   ├── server.ts              # Entry point
+│   │   ├── controller/            # Route handlers
+│   │   ├── middleware/            # JWT authentication
+│   │   ├── model/                 # MongoDB schemas
+│   │   ├── routes/                # API endpoints
+│   │   └── types/                 # TypeScript definitions
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── App.tsx                # Main component with routing
+│   │   ├── components/            # React components
+│   │   ├── hooks/                 # Custom hooks (useSocket)
+│   │   ├── types/                 # Global type definitions
+│   │   └── utils/                 # Helper functions
+│   └── package.json
+└── README.md
+```
+
+## Quick Start
+
+### Prerequisites
+
+- **Node.js** 18+ (LTS recommended)
+
+- **npm** or **yarn**
+
+- **MongoDB** (local or [Atlas](https://www.mongodb.com/cloud/atlas))
+
+### 1. Clone & Setup
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/ToniBirat7/Palm_Mind_Task_Chat_Application.git .
 cd "Palm_Mind(MERN_Project)"
 ```
 
-2. Copy environment files
+### 2. Docker Compose Setup
 
-Copy the example envs and fill with your values:
+For `MongoDB` setup using Docker Compose, run the following command in the project root:
 
 ```bash
-cp .env.example backend/.env.example frontend/.env.example
-# edit backend/.env.example to add MONGO_URI and JWT_SECRET
+cd backend
+docker-compose up -d
 ```
 
-3. Install dependencies
-
-Backend (from project root):
+### 3. Backend Setup
 
 ```bash
 cd backend
 npm install
-# or: pnpm install | yarn
 ```
 
-Frontend:
+Create a `.env` file:
+
+```bash
+MONGO_URI=mongodb://localhost:27017/palm_mind
+JWT_SECRET=your_jwt_secret_key_here
+PORT=3000
+```
+
+Start the backend:
+
+```bash
+npm run dev
+```
+
+The backend will run on **http://localhost:3000**
+
+### 4. Frontend Setup
 
 ```bash
 cd ../frontend
 npm install
 ```
 
-4. Run in development
-
-Start backend (example; adjust script in backend/package.json if you add one):
+Start the frontend:
 
 ```bash
-cd backend
-# if you have a dev script, use it (e.g. `npm run dev`)
-node index.js
-```
-
-Start frontend:
-
-```bash
-cd frontend
 npm run dev
 ```
 
-API & Socket summary (contract)
+The frontend will run on **http://localhost:5173**
 
-Backend HTTP API (examples)
+## API Endpoints
 
-- POST /api/auth/register — register a new user
+### Authentication
 
-- POST /api/auth/login — login and receive a JWT
+- `POST /auth/create-user` — Register a new user
 
-- GET /api/users — (auth) list users
+- `POST /auth/login` — Login and receive JWT token
 
-- GET /api/users/:id — (auth) get a user
+### Chat
 
-- PUT /api/users/:id — (auth, owner/admin) update a user
+- `GET /api/v1/pchat/:userId` — Fetch private chat history with a user
 
-- DELETE /api/users/:id — (auth, owner/admin) delete a user
+- `GET /api/v1/gchat/:groupId` — Fetch group chat history
 
-- GET /api/stats — (auth) returns { totalUsers, totalMessages }
+### WebSocket Events
 
-Socket events
+**Client → Server:**
 
-- Client -> Server
+- `join-room` — Join a chat room
 
-  - join: { userId, name } — user joins a room or global chat
+- `send_message` — Send a message to a group
 
-  - message: { fromUserId, text, toRoom? }
+- `send_private_message` — Send a direct message to a user
 
-- Server -> Client
+**Server → Client:**
 
-  - user-joined: { userId, name }
+- `member` — User joined (broadcasts member info)
 
-  - message: { \_id, fromUserId, name, text, createdAt }
+- `receive_message` — Incoming message
 
-  - counts: { totalUsers, totalMessages }
+- `disconnect` — User left
 
-Data shapes (examples)
+## Data Models
 
-- User
+### User
 
-  - \_id, name, email, passwordHash, role
+```typescript
+{
+  _id: ObjectId,
+  fname: string,
+  lname: string,
+  email: string (unique),
+  password: string (hashed),
+  address: string,
+  createdAt: Date,
+  updatedAt: Date
+}
+```
 
-- Message
-  - \_id, fromUser (ref), text, createdAt
+### Conversation (Private Chat)
 
-Environment variables
+```typescript
+{
+  _id: ObjectId,
+  sender: ObjectId (ref: User),
+  receiver: ObjectId (ref: User),
+  message: string,
+  timestamp: Date
+}
+```
 
-See the `.env.example` files for variables to set. Typical keys:
+### GroupChat
 
-- backend: MONGO_URI, JWT_SECRET, PORT
+```typescript
+{
+  _id: ObjectId,
+  sender: ObjectId (ref: User),
+  receiver: string (roomId),
+  message: string,
+  timestamp: Date
+}
+```
 
-- frontend: VITE_API_URL (URL of backend server)
+## Security Features
 
-Development notes & suggestions
+- JWT token-based authentication
 
-- Use nodemon / ts-node-dev for backend when developing TypeScript
+- Password hashing with bcrypt
 
-- Use React Query or SWR for restful requests; Socket.IO client for real-time
+- CORS enabled for cross-origin requests
 
-- Keep JWT expiry and refresh strategy appropriate for your app
+- Socket.IO middleware for JWT verification
 
-Deployment
+- HTTP-only cookies for token storage
 
-- For production, set NODE_ENV=production and secure your JWT_SECRET
+## UI Components
 
-- Use process managers (pm2) or containerize (Docker) for backend
+- **Login** — Email/password authentication with validation
 
-- Host frontend on static hosting (Vercel, Netlify) and point VITE_API_URL to your backend
+- **CreateUser** — User registration form
+
+- **Sidebar** — Navigation with Personal & Groups tabs
+
+- **ChatWindow** — 1-on-1 messaging interface
+
+- **GroupChatWindow** — Group chat with member list
+
+- **SocketProvider** — Global socket context for real-time updates
+
+## Development
+
+### Running Tests
+
+```bash
+cd frontend
+npm run lint
+```
+
+### Building for Production
+
+**Backend:**
+
+```bash
+cd backend
+npm run build
+npm start
+```
+
+**Frontend:**
+
+```bash
+cd frontend
+npm run build
+npm run preview
+```
+
+## 📝 Environment Variables
+
+### Backend (`.env`)
+
+```bash
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secure_secret_key
+PORT=3000
+```
+
+**Notes:**
+
+- First `create-user` to register a new user before logging in.
+
+- Then login to join the global chat.
+
+- Choose `Groups` tab to create/join group chats.
+
+- Choose `Personal` tab to start private chats.

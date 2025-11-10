@@ -26,7 +26,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
     return () => {
       socket.off("receive_private_message", handlePrivateMessage);
     };
-  }, [socket]);
+  }, [socket, selectedUser?._id]);
 
   // Fetch past messages
   useEffect(() => {
