@@ -1,5 +1,5 @@
 import express from "express";
-import { authRouter, chatRouter } from "./routes/index.js";
+import { apiRouter, authRouter, chatRouter } from "./routes/index.js";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import cors from "cors";
@@ -27,22 +27,38 @@ io.on("connection", (socket) => {
   socket.send({ sender: "Server", msg: socket.id });
 
   socket.on("join-room", (roomId) => {
-    console.log("Adding in the room:", roomId);
-    socket.join(roomId);
+    const userId = socket.data.user._id;
 
-    const member = socket.data.user;
-    member.status = true;
-    member.avatar = member.name.split(" ")[0];
+    // Check if this user is already in the map (preventing duplicates)
+    const isNewUser = !socket_member.has(userId);
 
-    // Broadcast to OTHER users in room (not including sender)
-    socket.to(roomId).emit("member", member);
+    console.log(isNewUser);
 
-    // Optionally: Send list of existing members to the new user
-    socket.emit("member", Array.from(socket_member.values()));
+    if (isNewUser) {
+      console.log("Adding in the room:", roomId);
+      socket.join(roomId);
 
-    // Add itself in the chat
-    console.log(`"Member ${member.name} Joined Room ${roomId}"`);
-    socket_member.set(socket.id, member);
+      // Prepare Memeber
+      const member = socket.data.user;
+      member.status = true;
+      member.avatar = member.name.split(" ")[0];
+
+      // Broadcast to OTHER users in room (not including sender)
+      socket.to(roomId).emit("member", member);
+
+      // Send list of existing members to the new user
+      socket.emit("member", Array.from(socket_member.values()));
+
+      // Add the socket in the Map
+      socket_member.set(userId, member);
+
+      // Add itself in the chat
+      console.log(`"Member ${member.name} Joined Room ${roomId}"`);
+    } else {
+      console.log(
+        `"Member ${socket.data.user.name} reconnected - already in room ${roomId}"`
+      );
+    }
   });
 
   socket.on("private-room", (privateRoomId) => {
@@ -122,6 +138,9 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("✗ User disconnected:", socket.id);
+    // Remove user from map on disconnect if you want
+    const userId = socket.data.user._id;
+    socket_member.delete(userId);
   });
 });
 
@@ -140,5 +159,43 @@ app.use(cookieParser());
 // Routes
 app.use("/auth", authRouter);
 app.use("/chat", chatRouter);
+app.use("/api/v1", apiRouter);
 
 export { server };
+
+// [
+//   {
+//     _id: ObjectId('69108176fe3c4b5acff49276'),
+//     fname: 'Birat',
+//     lname: 'Gautam',
+//     email: 'biratgautam09@gmail.com',
+//     password: '$2b$10$E5WlzRN/Jo6j.Jv.GzvCNO0a3q3iOxCqKVDYcGAJp9vbkM5VvdY8q',
+//     address: 'Kathmandu, Nepal\nBudhanikantha-09, Kathmandu',
+//     createdAt: ISODate('2025-11-09T11:56:38.811Z'),
+//     updatedAt: ISODate('2025-11-09T11:56:38.811Z'),
+//     __v: 0
+//   },
+//   {
+//     _id: ObjectId('6910836b7c07ac175737249b'),
+//     fname: 'Suman',
+//     lname: 'Karki',
+//     email: 'suman@gmail.com',
+//     password: '$2b$10$4pZYP6FJhWxRuUWe5nu1YuC5x17YnnTOioFp1uQ53HOv0YGKIBU32',
+//     address: 'Kapan',
+//     createdAt: ISODate('2025-11-09T12:04:59.162Z'),
+//     updatedAt: ISODate('2025-11-09T12:04:59.162Z'),
+//     __v: 0
+//   },
+//   {
+//     _id: ObjectId('691091b421c764244554caad'),
+//     fname: 'Samrat',
+//     lname: 'Karki',
+//     email: 'samrat@gmail.com',
+//     password: '$2b$10$/x5qtfE5Hja.xDlZ2R0pAudWkgLGSy6ijz0Vz3TR4naCD.20.Dst6',
+//     address: 'KapanKa',
+//     createdAt: ISODate('2025-11-09T13:05:56.955Z'),
+//     updatedAt: ISODate('2025-11-09T13:05:56.955Z'),
+//     __v: 0
+//   }
+// ]
+// chat_app>

@@ -10,7 +10,7 @@ export const authenticateJWTHTTP = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies.token;
+  const token = req.cookies.auth_token;
 
   if (!token) return res.status(401).json({ message: ", No Token Found" });
 

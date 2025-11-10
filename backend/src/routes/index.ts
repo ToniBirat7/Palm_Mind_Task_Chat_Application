@@ -8,6 +8,7 @@ import {
   deleteConvo,
   editConvo,
 } from "../controller/chat.js";
+import { getPrivateChats } from "../controller/privateChatApi.js";
 
 //  Auth Router
 const authRouter = Router();
@@ -25,4 +26,12 @@ chatRouter.post("/save", saveConvo);
 chatRouter.post("/update", getConvo);
 chatRouter.post("/delete", deleteConvo);
 
-export { authRouter, chatRouter };
+// API Router
+const apiRouter = Router();
+
+// Middleware
+apiRouter.use(authenticateJWTHTTP);
+
+apiRouter.get("/pchat/:selectedUserId", getPrivateChats);
+
+export { authRouter, chatRouter, apiRouter };

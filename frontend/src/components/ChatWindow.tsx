@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import NoChat from "./NoChat";
+import { API_URL } from "../consts";
 
 interface ChatWindowProps {
   selectedUser: Member | null;
@@ -19,12 +20,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
 
   const [inputValue, setInputValue] = useState("");
 
-  useEffect(async () => {
+  useEffect(() => {
     // Join a private room ASAP after Component Loads i.e. User Clicked
     socket.emit("private-room", `${selectedUser?._id}`);
-
-    // Fetch Previous 10 messages
-    await fetch("http://localhost:3000");
 
     // Event Listener for Received Message
     const handlePrivateMessage = (newMessage: Message) => {
@@ -41,6 +39,39 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
       socket.off("receive_private_message", handlePrivateMessage);
     };
   }, [socket]);
+
+  // Fetch past messages
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const res = await fetch(`${API_URL}/${selectedUser?._id}`, {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          throw new Error(
+            `HTTP error! status: ${res.status} error: ${res.err}`
+          );
+        }
+
+        const prevMessage = await res.json();
+        console.log("API Fetched Msg : ", [...prevMessage.data]);
+
+        setMessages((prev) => {
+          return [...prev, ...prevMessage.data];
+        });
+      } catch (error) {
+        console.error("Failed to fetch chat history:", error);
+      }
+    };
+
+    fetchMessages();
+
+    return () => {
+      setMessages([]);
+    };
+  }, [selectedUser?._id]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();

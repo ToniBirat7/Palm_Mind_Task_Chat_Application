@@ -177,10 +177,32 @@ npm install @types/jsonwebtoken @types/bcrypt --save-dev
 // Frontend
 const socket = io("http://localhost:3000", {
   transports: ["websocket"],
-  withCredentials: true, // Ensure Cookies are sent with the Request
+  // By default, browsers send cookies with requests to the same origin. For cross-origin requests, we need to explicitly enable it.
 });
 ```
 
 2. On the server side, we extract the JWT token from the cookie in the `Headers` i.e. `socket.handshake.headers.cookie` header during the Socket.IO connection handshake. We verify the token to authenticate the user before establishing the connection. This is done using a middleware function for Socket.IO.
+
+3. Once authenticated, the user can send and receive messages in real-time via Socket.IO.
+
+**Group Chat Flow**
+
+1. All the users join a common room named `_chat_room_` upon successful connection.
+
+2. Messages sent by any user are broadcasted to all users in the `_chat_room_`.
+
+3. All the messages are stored in `GroupChat` collection in MongoDB.
+
+**Private Chat Flow**
+
+1. Two individual users create their own private room named with their user IDs.
+
+2. Messages sent by one user are emitted only to the other user in the private room.
+
+3. All the messages are stored in `Conversation` collection in MongoDB.
+
+4. The private chat rooms are created dynamically when a user initiates a private chat with another user.
+
+5. Past messages are fetched from `api/v1/chat/pchat/:selectedUserId` endpoint when a private chat is initiated.
 
 <hr>
