@@ -1,8 +1,8 @@
 // API Controller for Private Chats
 import { Conversation } from "../model/chat.model.js";
-import { User } from "../model/user.model.js";
 import type { Request, Response } from "express";
 
+// getPreviousPrivateChat : Implemented
 export const getPrivateChats = async (req: Request, res: Response) => {
   try {
     const currentUser = (req as any).user; // payload
@@ -51,6 +51,7 @@ export const getPrivateChats = async (req: Request, res: Response) => {
   }
 };
 
+// deletePreviousPrivateChat : Not Implemented
 export const deletePrivateChats = async (req: Request, res: Response) => {
   try {
     const currentUser = (req as any).user;
@@ -79,6 +80,7 @@ export const deletePrivateChats = async (req: Request, res: Response) => {
   }
 };
 
+// updatePreviousPrivateChat : Not Implemented
 export const updatePrivateChats = async (req: Request, res: Response) => {
   try {
     const { messageId } = req.params;

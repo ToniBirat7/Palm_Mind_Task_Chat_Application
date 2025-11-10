@@ -1,15 +1,9 @@
 // React Context provider (lazy connect)
 import React, { type ReactNode } from "react";
-import { Socket } from "socket.io-client";
 import useSocket from "../hooks/useSocket";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GLOBAL_ROOM } from "../consts";
-
-interface SocketContextType {
-  socket: Socket | null;
-  members: Member[];
-}
 
 const SocketContext = React.createContext<SocketContextType>({
   socket: null,

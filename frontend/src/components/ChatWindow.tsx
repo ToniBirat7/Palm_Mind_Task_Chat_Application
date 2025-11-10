@@ -1,19 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
 import NoChat from "./NoChat";
 import { PRIVATE_CHAT_API_URL } from "../consts";
-
-interface ChatWindowProps {
-  selectedUser: Member | null;
-  socket: Socket<ServerToClientEvents, ClientToServerEvents>;
-}
-
-interface Message {
-  id: string;
-  text: string;
-  sender: string;
-  timestamp: Date | string;
-}
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
   const [messages, setMessages] = useState<Message[]>([]);

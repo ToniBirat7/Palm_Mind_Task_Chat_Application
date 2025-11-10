@@ -2,7 +2,6 @@ version: "3.9"
 
 services:
   # Actual MongoDB Service
-
   mongodb:
     image: mongo
     container_name: mongodb

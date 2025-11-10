@@ -1,1 +1,0 @@
-// singleton socket factory / connector

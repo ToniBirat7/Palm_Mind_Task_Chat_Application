@@ -1,13 +1,13 @@
 // Related to auths
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
 import jwt, { type SignOptions } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import {
   BCRYPT_SALT_ROUNDS,
   JWT_EXPIRES_IN,
   JWT_SECRET,
-  NODE_ENV,
 } from "../config/index.js";
+
 import { User } from "../model/user.model.js";
 
 export const createUser = async (req: Request, res: Response) => {

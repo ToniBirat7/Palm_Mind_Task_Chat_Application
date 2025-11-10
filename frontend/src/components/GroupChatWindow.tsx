@@ -1,25 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
 import NoChat from "./NoChat";
 import { GROUP_CHAT_API_URL, GLOBAL_ROOM } from "../consts";
-
-interface GroupChatWindowProps {
-  selectedGroup: {
-    id: string;
-    name: string;
-    avatar: string;
-    memberCount: number;
-  } | null;
-  socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
-}
-
-interface GroupMessage {
-  id: string;
-  text: string;
-  sender: string;
-  receiver: "_chat_room";
-  timestamp: Date | string;
-}
 
 const GroupChatWindow: React.FC<GroupChatWindowProps> = ({
   selectedGroup,

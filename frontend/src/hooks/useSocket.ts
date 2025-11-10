@@ -9,7 +9,6 @@ const useSocket = (): Socket<ServerToClientEvents, ClientToServerEvents> => {
   >(() => {
     const s = io("http://localhost:3000", {
       transports: ["websocket"], // use WebSocket transport
-      // autoConnect: true,
     });
 
     return s;

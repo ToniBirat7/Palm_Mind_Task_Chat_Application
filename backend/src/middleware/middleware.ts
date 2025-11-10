@@ -5,6 +5,7 @@ import { JWT_SECRET } from "../config/index.js";
 import type { ExtendedError, Socket } from "socket.io";
 import cookie from "cookie";
 
+// For API
 export const authenticateJWTHTTP = (
   req: Request,
   res: Response,
@@ -28,6 +29,7 @@ export const authenticateJWTHTTP = (
   }
 };
 
+// For Socket
 export const authenticateJWTSocket = (
   socket: Socket,
   next: (err?: ExtendedError) => void

@@ -1,5 +1,5 @@
 import express from "express";
-import { apiRouter, authRouter, chatRouter } from "./routes/index.js";
+import { apiRouter, authRouter } from "./routes/index.js";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import cors from "cors";
@@ -8,24 +8,26 @@ import { authenticateJWTSocket } from "./middleware/middleware.js";
 import { Conversation } from "./model/chat.model.js";
 import { GroupChat } from "./model/group_chat.model.js";
 
-const app = express();
-const server = createServer(app);
+const app = express(); // Express Server
+const server = createServer(app); // HTTP Server to Handle Both HTTP1.1 and HTTP2 i.e Upgrade to WebSocket
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
     methods: ["GET", "POST"],
   },
-});
+}); // Socket Server for Ws Connection
 
 // Middleware for Socket JWT
 io.use(authenticateJWTSocket);
 
+// Track of joined memebers in the group
 const socket_member = new Map<string, Member>();
 
 io.on("connection", (socket) => {
   console.log("✓ User connected:", socket.id);
   socket.send({ sender: "Server", msg: socket.id });
 
+  // Global Room where every user joins
   socket.on("join-room", (roomId) => {
     const userId = socket.data.user._id;
 
@@ -34,6 +36,7 @@ io.on("connection", (socket) => {
 
     if (isNewUser) {
       console.log("Adding in the room:", roomId);
+
       socket.join(roomId);
 
       // Prepare Memeber
@@ -44,13 +47,12 @@ io.on("connection", (socket) => {
       // Broadcast to OTHER users in room (not including sender)
       socket.to(roomId).emit("member", member);
 
-      // Send list of existing members to the new user
+      // Add itself in the chat
       socket.emit("member", Array.from(socket_member.values()));
 
       // Add the socket in the Map
       socket_member.set(userId, member);
 
-      // Add itself in the chat
       console.log(`"Member ${member.name} Joined Room ${roomId}"`);
     } else {
       console.log(
@@ -59,11 +61,13 @@ io.on("connection", (socket) => {
     }
   });
 
+  // When a user clicks a user in the SidebarUI, unique room is created for this user, Utilize this room for 1 to 1 chat
   socket.on("private-room", (privateRoomId) => {
     console.log("Private-Room : ", privateRoomId);
     socket.join(privateRoomId);
   });
 
+  // Event listner for 1 to 1 chat
   socket.on("send_private_message", async (msg, receiverId) => {
     const sender = socket.data.user;
 
@@ -72,7 +76,7 @@ io.on("connection", (socket) => {
     const senderRoom = `${sender._id}`;
 
     // Save to DB with correct format
-    const savedMsg = await Conversation.create({
+    await Conversation.create({
       sender: sender._id,
       receiver: receiverId,
       message: msg.text,
@@ -83,14 +87,12 @@ io.on("connection", (socket) => {
     const messageToReceiver = {
       ...msg,
       sender: sender.name,
-      // senderId: sender._id, // Don't need atm
     };
 
     // message for sender
     const messageToSender = {
       ...msg,
       sender: "user",
-      // senderId: sender._id, // Don't need atm
     };
 
     // to receiver
@@ -100,14 +102,14 @@ io.on("connection", (socket) => {
     io.to(senderRoom).emit("receive_private_message", messageToSender);
   });
 
-  // Group Message Event
+  // Individual Message from Global Group Chat
   socket.on("send_message", async (grpMsg, roomId) => {
     console.log("Received Msg : ", grpMsg);
 
     const sender = socket.data.user;
 
     // Save to DB with correct format
-    const savedMsg = await GroupChat.create({
+    await GroupChat.create({
       sender: sender._id,
       receiver: roomId,
       message: grpMsg.text,
@@ -156,7 +158,6 @@ app.use(cookieParser());
 
 // Routes
 app.use("/auth", authRouter);
-app.use("/chat", chatRouter);
 app.use("/api/v1", apiRouter);
 
 export { server };
