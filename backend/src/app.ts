@@ -69,14 +69,14 @@ io.on("connection", (socket) => {
     const messageToReceiver = {
       ...msg,
       sender: sender.name,
-      senderId: sender._id,
+      // senderId: sender._id, // Don't need atm
     };
 
     // message for sender
     const messageToSender = {
       ...msg,
       sender: "user",
-      senderId: sender._id,
+      // senderId: sender._id, // Don't need atm
     };
 
     // to receiver

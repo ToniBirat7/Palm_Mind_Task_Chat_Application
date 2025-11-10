@@ -19,10 +19,16 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
 
   const [inputValue, setInputValue] = useState("");
 
-  useEffect(() => {
+  useEffect(async () => {
+    // Join a private room ASAP after Component Loads i.e. User Clicked
     socket.emit("private-room", `${selectedUser?._id}`);
 
+    // Fetch Previous 10 messages
+    await fetch("http://localhost:3000");
+
+    // Event Listener for Received Message
     const handlePrivateMessage = (newMessage: Message) => {
+      console.log("Private Msg : ", newMessage);
       setMessages((prev) => {
         return [...prev, newMessage];
       });
@@ -30,6 +36,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
 
     socket.on("receive_private_message", handlePrivateMessage);
 
+    // Clean up when unmount
     return () => {
       socket.off("receive_private_message", handlePrivateMessage);
     };
@@ -41,7 +48,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
       const newMessage: Message = {
         id: `${Date.now()}-${Math.random().toString(36)}`,
         text: inputValue,
-        sender: "User",
+        sender: "user",
         timestamp: new Date(),
       };
 
@@ -129,7 +136,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
               <div
                 key={message.id}
                 className={`flex ${
-                  message.sender === "user" ? "justify-end" : "justify-start"
+                  message.sender === "user" ? "justify-start" : "justify-end"
                 } animate-fade-in`}
               >
                 <div className="flex flex-col gap-1">

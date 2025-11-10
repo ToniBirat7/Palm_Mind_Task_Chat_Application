@@ -30,9 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"personal" | "groups">("personal");
 
-  const users = members;
-
-  const filteredUsers = users.filter((user) =>
+  const filteredUsers = members.filter((user) =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
