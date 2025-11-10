@@ -32,8 +32,6 @@ io.on("connection", (socket) => {
     // Check if this user is already in the map (preventing duplicates)
     const isNewUser = !socket_member.has(userId);
 
-    console.log(isNewUser);
-
     if (isNewUser) {
       console.log("Adding in the room:", roomId);
       socket.join(roomId);
@@ -102,6 +100,7 @@ io.on("connection", (socket) => {
     io.to(senderRoom).emit("receive_private_message", messageToSender);
   });
 
+  // Group Message Event
   socket.on("send_message", async (grpMsg, roomId) => {
     console.log("Received Msg : ", grpMsg);
 
@@ -119,14 +118,12 @@ io.on("connection", (socket) => {
     const messageToOthers = {
       ...grpMsg,
       sender: sender.name,
-      senderId: sender._id,
     };
 
     // Message for sender (mark as "user")
     const messageToSender = {
       ...grpMsg,
       sender: "user",
-      senderId: sender._id,
     };
 
     // Broadcast to others in room
@@ -151,6 +148,7 @@ app.use(
     credentials: true, // Allow Cookies to be sent to the CORS
   })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -162,40 +160,3 @@ app.use("/chat", chatRouter);
 app.use("/api/v1", apiRouter);
 
 export { server };
-
-// [
-//   {
-//     _id: ObjectId('69108176fe3c4b5acff49276'),
-//     fname: 'Birat',
-//     lname: 'Gautam',
-//     email: 'biratgautam09@gmail.com',
-//     password: '$2b$10$E5WlzRN/Jo6j.Jv.GzvCNO0a3q3iOxCqKVDYcGAJp9vbkM5VvdY8q',
-//     address: 'Kathmandu, Nepal\nBudhanikantha-09, Kathmandu',
-//     createdAt: ISODate('2025-11-09T11:56:38.811Z'),
-//     updatedAt: ISODate('2025-11-09T11:56:38.811Z'),
-//     __v: 0
-//   },
-//   {
-//     _id: ObjectId('6910836b7c07ac175737249b'),
-//     fname: 'Suman',
-//     lname: 'Karki',
-//     email: 'suman@gmail.com',
-//     password: '$2b$10$4pZYP6FJhWxRuUWe5nu1YuC5x17YnnTOioFp1uQ53HOv0YGKIBU32',
-//     address: 'Kapan',
-//     createdAt: ISODate('2025-11-09T12:04:59.162Z'),
-//     updatedAt: ISODate('2025-11-09T12:04:59.162Z'),
-//     __v: 0
-//   },
-//   {
-//     _id: ObjectId('691091b421c764244554caad'),
-//     fname: 'Samrat',
-//     lname: 'Karki',
-//     email: 'samrat@gmail.com',
-//     password: '$2b$10$/x5qtfE5Hja.xDlZ2R0pAudWkgLGSy6ijz0Vz3TR4naCD.20.Dst6',
-//     address: 'KapanKa',
-//     createdAt: ISODate('2025-11-09T13:05:56.955Z'),
-//     updatedAt: ISODate('2025-11-09T13:05:56.955Z'),
-//     __v: 0
-//   }
-// ]
-// chat_app>

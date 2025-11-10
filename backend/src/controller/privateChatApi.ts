@@ -5,7 +5,7 @@ import type { Request, Response } from "express";
 
 export const getPrivateChats = async (req: Request, res: Response) => {
   try {
-    const currentUser = (req as any).user; // JWT middleware
+    const currentUser = (req as any).user; // payload
     const { selectedUserId } = req.params; // The other user's ID
 
     console.log(

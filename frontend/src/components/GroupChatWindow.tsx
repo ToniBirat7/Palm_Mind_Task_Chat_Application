@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import NoChat from "./NoChat";
+import { GROUP_CHAT_API_URL, GLOBAL_ROOM } from "../consts";
 
 interface GroupChatWindowProps {
   selectedGroup: {
@@ -18,7 +19,6 @@ interface GroupMessage {
   sender: string;
   receiver: "_chat_room";
   timestamp: Date | string;
-  senderId?: string;
 }
 
 const GroupChatWindow: React.FC<GroupChatWindowProps> = ({
@@ -26,9 +26,9 @@ const GroupChatWindow: React.FC<GroupChatWindowProps> = ({
   socket,
 }) => {
   const [messages, setMessages] = useState<GroupMessage[]>([]);
-
   const [inputValue, setInputValue] = useState("");
   const [showMembers, setShowMembers] = useState(false);
+  const [totalChatCounts, setTotalChatCounts] = useState("0");
 
   useEffect(() => {
     const handleReceiveMessage = (grpMsg: GroupMessage) => {
@@ -44,6 +44,38 @@ const GroupChatWindow: React.FC<GroupChatWindowProps> = ({
       socket?.off("receive_message", handleReceiveMessage);
     };
   }, [socket]);
+
+  // Fetch past group message
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const res = await fetch(`${GROUP_CHAT_API_URL}/${GLOBAL_ROOM}`, {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          throw new Error(
+            `HTTP error! status: ${res.status} error: ${res.err}`
+          );
+        }
+
+        const prevMessage = await res.json();
+        console.log("API Fetched Group Msg : ", [...prevMessage.data]);
+
+        setMessages((prev) => {
+          return [...prev, ...prevMessage.data];
+        });
+
+        setTotalChatCounts(prevMessage.count);
+      } catch (error) {
+        console.error("Failed to fetch chat history:", error);
+      }
+    };
+
+    fetchMessages();
+    return () => {};
+  }, [selectedGroup]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,6 +129,10 @@ const GroupChatWindow: React.FC<GroupChatWindowProps> = ({
                 </h2>
                 <p className="text-xs text-gray-400">
                   {selectedGroup.memberCount} members
+                </p>
+
+                <p className="text-xs text-gray-400">
+                  Total Chat Counts : {totalChatCounts}
                 </p>
               </div>
             </div>

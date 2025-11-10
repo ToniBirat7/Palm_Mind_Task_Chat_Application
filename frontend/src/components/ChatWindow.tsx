@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import NoChat from "./NoChat";
-import { API_URL } from "../consts";
+import { PRIVATE_CHAT_API_URL } from "../consts";
 
 interface ChatWindowProps {
   selectedUser: Member | null;
@@ -19,6 +19,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
   const [messages, setMessages] = useState<Message[]>([]);
 
   const [inputValue, setInputValue] = useState("");
+  const [totalChatCounts, setTotalChatCounts] = useState("0");
 
   useEffect(() => {
     // Join a private room ASAP after Component Loads i.e. User Clicked
@@ -44,10 +45,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await fetch(`${API_URL}/${selectedUser?._id}`, {
-          method: "GET",
-          credentials: "include",
-        });
+        const res = await fetch(
+          `${PRIVATE_CHAT_API_URL}/${selectedUser?._id}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
         if (!res.ok) {
           throw new Error(
@@ -61,6 +65,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
         setMessages((prev) => {
           return [...prev, ...prevMessage.data];
         });
+        setTotalChatCounts(prevMessage.count);
       } catch (error) {
         console.error("Failed to fetch chat history:", error);
       }
@@ -109,6 +114,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
                   {selectedUser.name}
                 </h2>
                 <p className="text-xs text-gray-400">Active now</p>
+                <p className="text-xs text-gray-400">
+                  Chat Counts : {totalChatCounts}
+                </p>
               </div>
             </div>
 

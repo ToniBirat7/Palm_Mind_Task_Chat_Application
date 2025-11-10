@@ -4,6 +4,7 @@ import { Socket } from "socket.io-client";
 import useSocket from "../hooks/useSocket";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { GLOBAL_ROOM } from "../consts";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -25,9 +26,8 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = (props) => {
     // Handle connection state
     const handleConnect = () => {
       console.log("Socket connected");
-      const roomId = "_chat_room";
 
-      socket.emit("join-room", roomId);
+      socket.emit("join-room", GLOBAL_ROOM);
     };
 
     const handleDisconnect = () => {
